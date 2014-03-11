@@ -1,5 +1,12 @@
 <?php
 
+/*
+* The php configuration file for configuring the question type. In this file the path to java compiler
+* and the path to JUnit compiler have to be set properly in order to compile and test java classes on
+* the server.
+*/
+
+
 global $CFG;
 
 $cfg_dirroot_backslashes = $CFG->dirroot;

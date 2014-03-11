@@ -21,6 +21,10 @@ defined('MOODLE_INTERNAL') || die();
  */
 class qtype_javaunittest_renderer extends qtype_renderer {
 
+    /**
+     * Generates the web-side when te student is attempting the question. This is the
+     * side which is showed with the question text and the response field
+     */
     public function formulation_and_controls(question_attempt $qa,
             question_display_options $options) {
 
@@ -32,6 +36,7 @@ class qtype_javaunittest_renderer extends qtype_renderer {
         // Answer field.
         $step = $qa->get_last_step_with_qt_var('answer');
 
+	// Get the question options to show the question text
 	$question->options = $DB->get_record('qtype_javaunittest_options' , array('questionid' =>$question->id));
 	$studentscode = $question->options->givencode;
         if (empty($options->readonly)) {
@@ -41,6 +46,7 @@ class qtype_javaunittest_renderer extends qtype_renderer {
             $answer = $responseoutput->response_area_read_only('answer', $qa, $step, $question->responsefieldlines, $options->context, $studentscode);
         }
 
+	// Generate the html code which will be showed
         $result = '';
         $result .= html_writer::tag('div', $question->format_questiontext($qa), array('class' => 'qtext'));
         $result .= html_writer::start_tag('div', array('class' => 'ablock'));
@@ -51,20 +57,26 @@ class qtype_javaunittest_renderer extends qtype_renderer {
     }
 
 
+    /**
+     * Generates the specific feedback from the database when the attempt is finished
+     * and the question is answered.
+     */   
     public function specific_feedback(question_attempt $qa) {
 	
 	global $DB, $CFG;
 
+	//in question.grade_response() function these data were used to store the feedback
+	//in the database.
 	$attemptid = optional_param('attempt', '', PARAM_INT);
-
 	$question = $qa->get_question();
 	$step = $qa->get_last_step_with_qt_var('answer');
 	$studentid = $step->get_user_id();
 	$questionid = $question->id;
 
-	//compute the unique id for the feedback
+	//compute the unique id of the feedback
 	$unique_answerid = ($studentid + $questionid * $attemptid) + ($studentid * $questionid + $attemptid);
 
+	//get the feedback from the database
 	$answer = $DB->get_records('question_answers', array('question' => $unique_answerid));
 	$answer = array_shift($answer);
 

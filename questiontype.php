@@ -23,11 +23,16 @@ require_once($CFG->libdir . '/questionlib.php');
  */
 class qtype_javaunittest extends question_type {
 
+
     public function response_file_areas() {
 
         return array('attachments', 'answer');
     }
 
+    /**
+     * code to retrieve the extra data we stored for the question in the database
+     * Get additional information from database and attach it to the question object
+     */ 
     public function get_question_options($question) {
 
         global $DB;
@@ -35,6 +40,11 @@ class qtype_javaunittest extends question_type {
         parent::get_question_options($question);
     }
 
+
+    /**
+     * Save the units and the answers associated with this question.
+     * @return boolean to indicate success of failure.
+     */
     public function save_question_options($formdata) {
 
         global $DB;
@@ -63,6 +73,12 @@ class qtype_javaunittest extends question_type {
 
     }
 
+    /**
+     * Deletes question and its tables from the database
+     *
+     * @param integer $questionid The question being deleted
+     * @return boolean to indicate success of failure.
+     */
     public function delete_question($questionid, $contextid) {
         global $DB;
         $DB->delete_records('qtype_javaunittest_options', array('questionid' => $questionid));
@@ -70,6 +86,10 @@ class qtype_javaunittest extends question_type {
         parent::delete_question($questionid, $contextid);
     }
 
+    /**
+     * Initielizes question from the question-type specific database tables
+     * @return boolean to indicate success of failure.
+     */
     protected function initialise_question_instance(question_definition $question, $questiondata) {
 
         parent::initialise_question_instance($question, $questiondata);

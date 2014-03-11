@@ -1,6 +1,9 @@
 <?php
 /**
- * The edit form class for this question type.
+ * The edit form class for this question type. Each time a question is created moodle uses the
+ * edit form to collect data from the teacher. With this form the following attributes of a question 
+ * need to be defined: name, question text, geven code and the JUnit test class. Affter editing this 
+ * form a question is created in the database with the form's attributes.
  *
  * @package    qtype
  * @subpackage javaunittest
@@ -31,7 +34,8 @@ class qtype_javaunittest_edit_form extends question_edit_form {
 
 	$mform->removeElement('defaultmark');
         $mform->addElement('hidden', 'defaultmark', 1);
-
+	
+	//-------------------------- size of the response field                                             
         $mform->addElement('select', 'responsefieldlines', get_string('responsefieldlines', 'qtype_javaunittest'), $qtype->response_sizes());
         $mform->setDefault('responsefieldlines', 15);
 
@@ -40,7 +44,7 @@ class qtype_javaunittest_edit_form extends question_edit_form {
         $mform->setType('givencode', PARAM_RAW);
         $mform->addHelpButton('givencode', 'givencode', 'qtype_javaunittest');
 
-        //-------------------------- Load test class
+        //-------------------------- "Test class" Text-Area
 	$mform->addElement('textarea', 'testclassname', get_string('testclassname', 'qtype_javaunittest'), array('cols'=>80,  'rows'=>1));
         $mform->setType('testclassname', PARAM_RAW);
 	$mform->addRule('testclassname', null, 'required');
@@ -53,7 +57,7 @@ class qtype_javaunittest_edit_form extends question_edit_form {
     }
 
 
-
+    //this methode is called to preprocess the data for the edit form in the case of reediting the question
     protected function data_preprocessing($question) {
 
 	global $CFG;
