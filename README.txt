@@ -1,5 +1,3 @@
-The question type javaunittest was tested on Ubuntu 10.4 with Moodle2.3 and Moodle2.5, with Firefox and Google Chrome
-
 ==========================================================
 Todo in order to get this question type running properly:
 ==========================================================
@@ -12,4 +10,4 @@ Todo in order to get this question type running properly:
     Note: There is also a security manager which checks for non-proper student-responses. 
 	  This way you should not worry about the student messing up the system (polfile-file).
 
-3. EXAMPLE_FILES/readme.txt explains how to create a question with this question type.  
+3. EXAMPLE_FILES/readme.txt explains how to create a question with this question type.
