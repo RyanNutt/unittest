@@ -24,7 +24,18 @@ class qtype_javaunittest_edit_form extends question_edit_form {
 
     protected function definition_inner($mform) {
 	global $DB, $question;
-
+        global $PAGE; 
+        
+        $conf = get_config('qtype_javaunittest');
+        
+        // Need to load JS for Ace
+        if ($conf->useace) {
+            $PAGE->requires->js('/question/type/javaunittest/ext/ace/src-min-noconflict/ace.js'); 
+            $PAGE->requires->yui_module('moodle-qtype_javaunittest-loader', 'M.javaunittest_loader.edit_page', array(array()));
+          
+          
+        }
+        
 	$loaded_initialy = optional_param('reloaded_initialy',1,PARAM_INT);
 
         $qtype = question_bank::get_qtype('javaunittest');

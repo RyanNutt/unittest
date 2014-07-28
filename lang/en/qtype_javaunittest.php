@@ -37,4 +37,13 @@ $string['WA'] = 'WRONG ANSWER';
 $string['CE'] = 'COMPILER ERROR';
 $string['JE'] = 'JUNIT TEST FILE ERROR: Test cannot be executed. The test class is eighter missing or contains compilation error(s).';
 
-
+$string['pathtojava'] = 'Path to Java';
+$string['configpathtojava'] = 'Server path to Java';
+$string['pathtojavac'] = 'Path to JavaC';
+$string['configpathtojavac'] = 'Server path to the Java compiler'; 
+$string['pathtojunit'] = 'Path to JUnit.jar';
+$string['configpathtojunit'] = 'Server path to the junit.jar file'; 
+$string['useace'] = 'Use the Ace editor';
+$string['configuseace'] = 'When available, use the Ace code editor instead of a plain textarea';
+$string['highlightcode'] = 'Wrap displayed code';
+$string['confighighlightcode'] = 'Wrap displayed code in &lbrack;code&lbrack; tags. Requires another plugin.'; 

@@ -22,13 +22,20 @@ defined('MOODLE_INTERNAL') || die();
 class qtype_javaunittest_renderer extends qtype_renderer {
 
     /**
+     * Used to keep the JavaScript from including more than once, even when
+     * multiple javaunittest questions are on the same page. 
+     * @var type 
+     */
+    private static $jsInitCalled = false; 
+    
+    /**
      * Generates the web-side when te student is attempting the question. This is the
      * side which is showed with the question text and the response field
      */
     public function formulation_and_controls(question_attempt $qa,
             question_display_options $options) {
 
-	global $DB;
+	global $DB, $PAGE;
 
         $question = $qa->get_question();
         $responseoutput = $question->get_format_renderer($this->page);
@@ -46,6 +53,8 @@ class qtype_javaunittest_renderer extends qtype_renderer {
             $answer = $responseoutput->response_area_read_only('answer', $qa, $step, $question->responsefieldlines, $options->context, $studentscode);
         }
 
+        $inputname = $qa->get_qt_field_name('answer');
+        
 	// Generate the html code which will be showed
         $result = '';
         $result .= html_writer::tag('div', $question->format_questiontext($qa), array('class' => 'qtext'));
@@ -53,6 +62,15 @@ class qtype_javaunittest_renderer extends qtype_renderer {
         $result .= html_writer::tag('div', $answer, array('class' => 'answer'));
         $result .= html_writer::end_tag('div');
 
+        $conf = get_config('qtype_javaunittest');
+        
+        // Need to load JS for Ace
+        if ($conf->useace) { // && !self::$jsInitCalled) {
+            $PAGE->requires->js('/question/type/javaunittest/ext/ace/src-min-noconflict/ace.js'); 
+            $PAGE->requires->yui_module('moodle-qtype_javaunittest-loader', 'M.javaunittest_loader.question_page', array(array('element' => $inputname)));
+            self::$jsInitCalled = true; 
+        }
+        
         return $result;
     }
 
@@ -154,12 +172,13 @@ class qtype_javaunittest_format_plain_renderer extends plugin_renderer_base {
     }
 
     public function response_area_read_only($name, $qa, $step, $lines, $context, $studentscode) {
-        return $this->textarea($step->get_qt_var($name), "", $lines, array('readonly' => 'readonly'));
+        $inputname = $qa->get_qt_field_name($name); 
+        return $this->textarea($step->get_qt_var($name), "", $lines, array('readonly' => 'readonly', 'id' => $inputname));
     }
 
     public function response_area_input($name, $qa, $step, $lines, $context, $studentscode) {
         $inputname = $qa->get_qt_field_name($name);
-        return $this->textarea($step->get_qt_var($name), $studentscode, $lines, array('name' => $inputname)) .
+        return $this->textarea($step->get_qt_var($name), $studentscode, $lines, array('name' => $inputname, 'id' => $inputname)) .
                 html_writer::empty_tag('input', array('type' => 'hidden',
                     'name' => $inputname . 'format', 'value' => FORMAT_PLAIN));
     }
