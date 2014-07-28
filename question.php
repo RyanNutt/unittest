@@ -193,6 +193,7 @@ class qtype_javaunittest_question extends question_graded_automatically {
 
 		//execute JUnit test
 		$executionoutput = $this->execute($temp_folder, $testFile, $testclassname, $studentclass, $studentsclassname);
+                
 
 		//filter the $executionoutput by 'Time 0.000' part in order to get same
 		//execution-outputs in the Results->Item analysis grouped together for a better analysis
@@ -292,14 +293,15 @@ class qtype_javaunittest_question extends question_graded_automatically {
      * @return $compileroutput the output of the compiler
      */  
     function compile($studentclass, $temp_folder, $studentsclassname) {
-
-        //work out the compile command line
+        $conf = get_config('qtype_javaunittest');
+        
+//work out the compile command line
         $compileroutputfile = $temp_folder . '/' . $studentsclassname . '_compileroutput.log';
 	touch($compileroutputfile);
 			
-        $command = PATH_TO_JAVAC . ' -cp ' . PATH_TO_JUNIT . ' ' . $studentclass . ' -Xstdout ' . $compileroutputfile;
-
-	//execute the command
+        $command = '"' . $conf->pathtojavac . '" -cp "' . $conf->pathtojunit . '" ' . $studentclass . ' -Xstdout ' . $compileroutputfile;
+        
+        //execute the command
 	$output = shell_exec(escapeshellcmd($command));
 	
 	//get the content of the copiler output
@@ -318,23 +320,34 @@ class qtype_javaunittest_question extends question_graded_automatically {
      * @return $executionoutput the output of the JUnit test
      */
     function execute($temp_folder, $testFile, $testFileName, $studentclass, $studentsclassname){
-
+        $conf = get_config('qtype_javaunittest');
+        
 	//create the log file to store the output of the JUnit test
         $executionoutputfile = $temp_folder. '/' . $studentsclassname . '_executionoutput.log';
 	$testFileName = str_replace(".java", "", $testFileName);
 	touch($studentclass);
 
 	//work out the compile command line to compile the JUnit test
-	$command = PATH_TO_JAVAC . ' -cp ' . PATH_TO_JUNIT . ' -sourcepath ' . $temp_folder . ' ' . $testFile . ' > ' . $executionoutputfile . ' 2>&1';
-
-	//execute the command
+	$command = '"' . $conf->pathtojavac . '" -cp "' . $conf->pathtojunit . '" -sourcepath ' . $temp_folder . ' ' . $testFile . ' > ' . $executionoutputfile . ' 2>&1';
+        
+        //execute the command
 	$output = shell_exec($command);	
 
 	//work out the compile command line to execute the JUnit test
-	$commandWithSecurity = PATH_TO_JAVA . " -Djava.security.manager=default" . " -Djava.security.policy=". PATH_TO_POLICY . " ";	
-	$command = $commandWithSecurity . ' -cp ' . PATH_TO_JUNIT . ':' . $temp_folder . ' junit.textui.TestRunner ' . $testFileName . ' > ' . $executionoutputfile . ' 2>&1';
-
-	//execute the command
+	$commandWithSecurity = '"' . $conf->pathtojava . '"' . " -Djava.security.manager=default" . " -Djava.security.policy=". PATH_TO_POLICY . " ";	
+	//$command = $commandWithSecurity . ' -cp "' . $conf->pathtojunit . '":' . $temp_folder . ' junit.textui.TestRunner ' . $testFileName . ' > ' . $executionoutputfile . ' 2>&1';
+        
+        $classPath = $conf->pathtojunit . ($this->isWindows() ? ';' : ':') . $temp_folder;
+        if (!empty($conf->pathtohamcrest)) {
+            $classPath .= ($this->isWindows() ? ';' : ':') . $conf->pathtohamcrest;
+        }
+        $classPath = '"' . $classPath . '"';
+        
+        /* Windows uses a semicolon to separate classpaths, Linux uses a colon */
+        $command = $commandWithSecurity . ' -cp ' . $classPath . ' org.junit.runner.JUnitCore ' . $testFileName . ' > ' . $executionoutputfile . ' 2>&1';
+	
+        
+        //execute the command
 	$output = shell_exec($command);
 
 	//get the execution log
@@ -418,6 +431,14 @@ class qtype_javaunittest_question extends question_graded_automatically {
         }
     }
 
-    
+    /**
+     * Check whether the server is running Windows.
+     * 
+     * @return boolean  True if running on Windows, False if something else
+     * @link http://stackoverflow.com/a/5879078
+     */
+    private function isWindows() {
+        return (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ;
+    }
 
 }

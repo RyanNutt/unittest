@@ -35,7 +35,7 @@ $string['CA'] = 'CORRECT ANSWER';
 $string['PCA'] = 'PARTIALLY CORRECT ANSWER';
 $string['WA'] = 'WRONG ANSWER';
 $string['CE'] = 'COMPILER ERROR';
-$string['JE'] = 'JUNIT TEST FILE ERROR: Test cannot be executed. The test class is eighter missing or contains compilation error(s).';
+$string['JE'] = 'JUNIT TEST FILE ERROR: Test cannot be executed. The test class is either missing or contains compilation error(s).';
 
 $string['pathtojava'] = 'Path to Java';
 $string['configpathtojava'] = 'Server path to Java';
@@ -47,3 +47,5 @@ $string['useace'] = 'Use the Ace editor';
 $string['configuseace'] = 'When available, use the Ace code editor instead of a plain textarea';
 $string['highlightcode'] = 'Wrap displayed code';
 $string['confighighlightcode'] = 'Wrap displayed code in &lbrack;code&lbrack; tags. Requires another plugin.'; 
+$string['pathtohamcrest'] = 'Path to hamcrest.jar';
+$string['configpathtohamcrest'] = 'Server path to the hamcrest.jar file. This file is only needed for JUnit 4.11 and up. If you\'re using an older version of JUnit 4 then you can leave this blank.'; 
