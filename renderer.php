@@ -98,7 +98,7 @@ class qtype_unittest_renderer extends qtype_renderer {
 	$answer = $DB->get_records('question_answers', array('question' => $unique_answerid));
 	$answer = array_shift($answer);
 
-	return $question->format_text($answer->feedback, 0, $qa, 'question', 'answerfeedback', 1);
+	return $question->format_text('<div style="white-space:pre-wrap;">'.$answer->feedback.'</div>', 0, $qa, 'question', 'answerfeedback', 1);
 
     }
 
