@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="question/type/javaunittest/db" VERSION="20120122" COMMENT="XMLDB file for Moodle question/type/javaunittest"
+<XMLDB PATH="question/type/javaunittest/db" VERSION="20120122" COMMENT="XMLDB file for Moodle question/type/unittest"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="qtype_javaunittest_options" COMMENT="Extra options for javaunittest questions.">
+    <TABLE NAME="qtype_unittest_options" COMMENT="Extra options for unittest questions.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true" NEXT="questionid"/>
         <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Foreign key linking to the question table." PREVIOUS="id" NEXT="responsefieldlines"/>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Strings for component 'qtype_javaunittest', language 'en', branch 'MOODLE_20_STABLE'
+ * Strings for component 'qtype_unittest', language 'en', branch 'MOODLE_20_STABLE'
  *
  * @copyright &copy: 2013 Gergely Bertalan, Technical University Berlin
  * @author bertalangeri@freemail.hu
@@ -13,7 +13,7 @@
 
 $string['graderinfo'] = 'Information for graders';
 $string['nlines'] = '{$a} lines';
-$string['pluginname'] = 'javaunittest';
+$string['pluginname'] = 'Unit Test';
 $string['pluginname_help'] = 'JUnit question type';
 $string['pluginname_link'] = 'question/type/javaunittest';
 $string['pluginnameadding'] = 'Adding an javaunittest question';

@@ -18,7 +18,7 @@ defined('MOODLE_INTERNAL') || die();
  * Represents an javaunittest question.
  *
  */
-class qtype_javaunittest_question extends question_graded_automatically {
+class qtype_unittest_question extends question_graded_automatically {
     public $responseformat;
     public $responsefieldlines;
     public $givencode;

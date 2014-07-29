@@ -16,7 +16,7 @@ defined('MOODLE_INTERNAL') || die();
  * Upgrade code for the javaunittest question type.
  * @param int $oldversion the version we are upgrading from.
  */
-function xmldb_qtype_javaunittest_upgrade($oldversion) {
+function xmldb_qtype_unittest_upgrade($oldversion) {
     global $CFG, $DB;
 
     $dbman = $DB->get_manager();
@@ -30,7 +30,7 @@ function xmldb_qtype_javaunittest_upgrade($oldversion) {
                   FROM {question} q
                   JOIN {question_answers} qa ON qa.question = q.id
 
-                 WHERE q.qtype = 'javaunittest'
+                 WHERE q.qtype = 'unittest'
                    AND " . $DB->sql_isnotempty('question_answers', 'feedback', false, true);
         // In Moodle <= 2.0 javaunittest had both question.generalfeedback and question_answers.feedback.
         // This was silly, and in Moodel >= 2.1 only question.generalfeedback. To avoid
