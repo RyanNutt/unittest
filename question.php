@@ -211,8 +211,9 @@ class qtype_unittest_question extends question_graded_automatically {
                 
                 //filter the $executionoutput by 'Time 0.000' part in order to get same
 		//execution-outputs in the Results->Item analysis grouped together for a better analysis
-		$cleaned_executionoutput = preg_replace("/Time:\s([0-9]+[.][0-9]+)\s/","",$executionoutput);
-		$cleaned_executionoutput = addslashes($cleaned_executionoutput);
+		//$cleaned_executionoutput = preg_replace("/Time:\s([0-9]+[.][0-9]+)\s/","",$executionoutput);
+		$cleaned_executionoutput = $executionoutput; 
+                $cleaned_executionoutput = addslashes($cleaned_executionoutput);
 
 		//initialize the feedback, later will be modified according to the junit test
 		$automatic_feedback = $cleaned_executionoutput;
@@ -221,15 +222,37 @@ class qtype_unittest_question extends question_graded_automatically {
             	//which means that 1 out of 4 test cases didn't pass the JUnit test
             	//In the second line it says "Time ..."
 
+                $numTests = 0;
+                $numFailures = 0;
+                $numErrors = 0;
+                
+                if (preg_match('/Tests run:.*?(\d+)/is', $cleaned_executionoutput, $matches)) {
+                    if (!empty($matches[1])) {
+                        $numTests = $matches[1]; 
+                    }
+                }
+                if (preg_match('/Failures:.*?(\d+?)/i', $cleaned_executionoutput, $matches)) {
+                    if (!empty($matches[1])) {
+                        $numFailures = $matches[1];
+                    }
+                }
+                if (preg_match('/Errors:.*?(\d+?)/is', $cleaned_executionoutput, $matches)) {
+                    if (!empty($matches[1])) {
+                        $numErrors = $matches[1];
+                    }
+                }
+                
+                $totalErrors = $numFailures + $numErrors; 
+                
             	// Discard the summary.
-            	$pos = strpos($executionoutput, 'Time') + 1; //get the pos in the string where 'Time' starts
-            	$executionoutputresult = substr($executionoutput, 0, $pos);
-
+            	//$pos = strpos($executionoutput, 'Time') + 1; //get the pos in the string where 'Time' starts
+            	//$executionoutputresult = substr($executionoutput, 0, $pos);
+                $executionoutputresult = $executionoutput; 
             	// Count the failures and errors.
-		$numtest = substr_count($executionoutputresult, '.');
-		$numfailures = substr_count($executionoutputresult, 'F');
-            	$numerrors = substr_count($executionoutputresult, 'E');
-		$totalerror = $numfailures + $numerrors;
+		//$numtest = substr_count($executionoutputresult, '.');
+		//$numfailures = substr_count($executionoutputresult, 'F');
+            	//$numerrors = substr_count($executionoutputresult, 'E');
+		//$totalerror = $numfailures + $numerrors;
 
 		//after we counted the failures and errors we can grade the response
 
@@ -238,21 +261,21 @@ class qtype_unittest_question extends question_graded_automatically {
 		//properly. Therefore we grade the student's answer as correct. We don't know whether it is correct or not 
 		//but since our JUnit testfile is wrong and we could not execute the test because of our fault, we grade the answer
 		//as correct. 
-		if($numtest == 0){
+		if($numTests == 0){
 			$fraction = 1; 
 			$this->automatic_feedback = get_string('JE', 'qtype_unittest') . "\n\n";
 			
 		}
 		//CASE 2
 		//100% correct answer
-		else if($totalerror == 0){
+		else if($totalErrors == 0){
 			$fraction = 1; 
 			$this->automatic_feedback = get_string('CA', 'qtype_unittest') . "\n\n" . $automatic_feedback;
 		}
 		//CASE 3
 		//partially correct answer
-		else if($numtest > $totalerror){
-			$fraction = 1 - round(( $totalerror / $numtest),2);
+		else if($numTests > $totalErrors){
+			$fraction = 1 - round(( 1.0 * $totalErrors / $numTests),2);
 			$this->automatic_feedback = get_string('PCA', 'qtype_unittest') . "\n\n" . $automatic_feedback;
 		}
 		//CASE 4
@@ -358,27 +381,33 @@ class qtype_unittest_question extends question_graded_automatically {
         //execute the command
 	$output = shell_exec($command);	
 
+        $policyFile = dirname(__FILE__).'/polfile';
+        
 	//work out the compile command line to execute the JUnit test
-	$commandWithSecurity = '"' . $conf->pathtojava . '"' . " -Djava.security.manager=default" . " -Djava.security.policy=". PATH_TO_POLICY . " ";	
+	$commandWithSecurity = '"' . $conf->pathtojava . '"' . " -Djava.security.manager=default" . " -Djava.security.policy=". $policyFile . " ";	
 	//$command = $commandWithSecurity . ' -cp "' . $conf->pathtojunit . '":' . $temp_folder . ' junit.textui.TestRunner ' . $testFileName . ' > ' . $executionoutputfile . ' 2>&1';
         
+        /* Windows uses a semicolon to separate classpaths, Linux uses a colon */
         $classPath = $conf->pathtojunit . ($this->isWindows() ? ';' : ':') . $temp_folder;
         if (!empty($conf->pathtohamcrest)) {
             $classPath .= ($this->isWindows() ? ';' : ':') . $conf->pathtohamcrest;
         }
         $classPath = '"' . $classPath . '"';
         
-        /* Windows uses a semicolon to separate classpaths, Linux uses a colon */
-        $command = $commandWithSecurity . ' -cp ' . $classPath . ' org.junit.runner.JUnitCore ' . $testFileName . ' > ' . $executionoutputfile . ' 2>&1';
-	
+        //$command = $commandWithSecurity . ' -cp ' . $classPath . ' org.junit.runner.JUnitCore ' . $testFileName . ' > ' . $executionoutputfile . ' 2>&1';
+	$command = $commandWithSecurity . ' -cp ' . $classPath . ' org.junit.runner.JUnitCore ' . $testFileName;
         
         //execute the command
-	$output = shell_exec($command);
+	//$output = shell_exec($command);
 
+        $stdout = '';
+        $stderr = ''; 
+        $ret = $this->execute_process($command, $stdout, $stderr);
+        
 	//get the execution log
-	$executionoutput = file_get_contents($executionoutputfile);
+	//$executionoutput = file_get_contents($executionoutputfile);
 
-	return $executionoutput;
+	return $stdout;
     }
 
 
