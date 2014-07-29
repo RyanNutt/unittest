@@ -114,6 +114,20 @@ class qtype_unittest_question extends question_graded_automatically {
 
 	global $CFG, $DB;
         
+        $conf = get_config('qtype_unittest');
+        
+        // Check to make sure that javac, java, and unit exist in the
+        // path specified. Otherwise, just error out
+        if (!is_executable($conf->pathtojava)) {
+            die(get_string('err_nojava', 'qtype_unittest')); 
+        }
+        if (!is_executable($conf->pathtojavac)){
+            die(get_string('err_nojavac', 'qtype_unittest'));
+        }
+        if (!is_readable($conf->pathtojunit)) {
+            die(get_string('err_nojunit', 'qtype_unittest')); 
+        }
+        
 	/* preparation:
          * create a new sub-folder in the course-files-path for each question.
          * Put the related source codes (Test.java and student_response.java) of a user into this sub-folder
@@ -279,7 +293,7 @@ class qtype_unittest_question extends question_graded_automatically {
     }
 	
     //at this pont the feedback has already stored in the database and the grade is created. We delete the temporary 
-    //and return with the coputed fraction of the response.
+    //and return with the computed fraction of the response.
     $this->delTree($temp_folder);
     return array($fraction, question_state::graded_state_for_fraction($fraction));
     }
@@ -295,27 +309,26 @@ class qtype_unittest_question extends question_graded_automatically {
     function compile($studentclass, $temp_folder, $studentsclassname) {
         $conf = get_config('qtype_unittest');
         
-        // Check to make sure that javac, java, and unit exist in the
-        // path specified. Otherwise, just error out
-        if (!is_executable($conf->pathtojava)) {
-            die(get_string('err_nojava', 'qtype_unittest')); 
-        }
-        if (!is_executable($conf->pathtojavac)){
-            die(get_string('err_nojavac', 'qtype_unittest'));
-        }
-        if (!is_readable($conf->pathtojunit)) {
-            die(get_string('err_nojunit', 'qtype_unittest')); 
-        }
+       
         
-//work out the compile command line
+        //work out the compile command line
         $compileroutputfile = $temp_folder . '/' . $studentsclassname . '_compileroutput.log';
 	touch($compileroutputfile);
 			
-        $command = '"' . $conf->pathtojavac . '" -cp "' . $conf->pathtojunit . '" ' . $studentclass . ' -Xstdout ' . $compileroutputfile;
+        $command = '"' . $conf->pathtojavac . '" -cp "' . $conf->pathtojunit . '" ' . $studentclass;// . ' -Xstdout ' . $compileroutputfile;
         
         //execute the command
-	$output = shell_exec(escapeshellcmd($command));
-	
+	//$output = shell_exec(escapeshellcmd($command));
+	$stdout = '';
+        $stderr = '';
+        $proc = $this->execute_process($command, $stdout, $stderr);
+        
+        return $stderr; 
+        
+        var_dump($stdout);
+        var_dump($stderr);
+        die(); 
+        
 	//get the content of the copiler output
         $compileroutput = file_get_contents($compileroutputfile);
 
@@ -453,4 +466,37 @@ class qtype_unittest_question extends question_graded_automatically {
         return (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') ;
     }
 
+    
+    /**
+     * Replacement for the shell_exec that captures stdout and stderr so 
+     * that they don't have to be saved to a file if not needed. 
+     * 
+     * @link http://stackoverflow.com/a/2320835
+     * 
+     * @return Exit code from the process
+     */
+    private function execute_process($cmd, &$stdout, &$stderr, $workingFolder=null) {
+         
+        $descriptorspec = array(
+            0 => array("pipe", "r"),  // stdin
+            1 => array("pipe", "w"),  // stdout
+            2 => array("pipe", "w"),  // stderr
+         );
+        
+        /**
+         * Extra double quotes are due to a php bug with proc_open
+         * @link https://bugs.php.net/bug.php?id=49139
+         */
+        $proc_id = proc_open('"'. $cmd . '"', $descriptorspec, $pipes, $workingFolder);
+        
+        if ($proc_id) {
+            $stdout = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+        }
+        
+        return proc_close($proc_id); 
+    }
 }
