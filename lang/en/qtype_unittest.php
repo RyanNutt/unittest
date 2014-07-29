@@ -49,3 +49,8 @@ $string['highlightcode'] = 'Wrap displayed code';
 $string['confighighlightcode'] = 'Wrap displayed code in &lbrack;code&lbrack; tags. Requires another plugin.'; 
 $string['pathtohamcrest'] = 'Path to hamcrest.jar';
 $string['configpathtohamcrest'] = 'Server path to the hamcrest.jar file. This file is only needed for JUnit 4.11 and up. If you\'re using an older version of JUnit 4 then you can leave this blank.'; 
+
+// Error messages
+$string['err_nojava'] = 'Java does not appear to exist at the path specified';
+$string['err_nojavac'] = 'JavaC does not appear to exist at the path specified';
+$string['err_nojunit'] = 'The JUnit.jar file does not appear to exist at the path specified'; 

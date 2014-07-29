@@ -113,7 +113,7 @@ class qtype_unittest_question extends question_graded_automatically {
     public function grade_response(array $response) {
 
 	global $CFG, $DB;
-
+        
 	/* preparation:
          * create a new sub-folder in the course-files-path for each question.
          * Put the related source codes (Test.java and student_response.java) of a user into this sub-folder
@@ -146,7 +146,7 @@ class qtype_unittest_question extends question_graded_automatically {
 
 	//create the test class from the database and save it in the temporary folder
 	$options = $DB->get_record('qtype_unittest_options', array('questionid' => $questionid));
-        var_dump($options); 
+         
 	$testclassname = $options->testclassname;
 
 	$junitcode = $options->junitcode;
@@ -195,8 +195,7 @@ class qtype_unittest_question extends question_graded_automatically {
 		//execute JUnit test
 		$executionoutput = $this->execute($temp_folder, $testFile, $testclassname, $studentclass, $studentsclassname);
                 
-
-		//filter the $executionoutput by 'Time 0.000' part in order to get same
+                //filter the $executionoutput by 'Time 0.000' part in order to get same
 		//execution-outputs in the Results->Item analysis grouped together for a better analysis
 		$cleaned_executionoutput = preg_replace("/Time:\s([0-9]+[.][0-9]+)\s/","",$executionoutput);
 		$cleaned_executionoutput = addslashes($cleaned_executionoutput);
@@ -295,6 +294,18 @@ class qtype_unittest_question extends question_graded_automatically {
      */  
     function compile($studentclass, $temp_folder, $studentsclassname) {
         $conf = get_config('qtype_unittest');
+        
+        // Check to make sure that javac, java, and unit exist in the
+        // path specified. Otherwise, just error out
+        if (!is_executable($conf->pathtojava)) {
+            die(get_string('err_nojava', 'qtype_unittest')); 
+        }
+        if (!is_executable($conf->pathtojavac)){
+            die(get_string('err_nojavac', 'qtype_unittest'));
+        }
+        if (!is_readable($conf->pathtojunit)) {
+            die(get_string('err_nojunit', 'qtype_unittest')); 
+        }
         
 //work out the compile command line
         $compileroutputfile = $temp_folder . '/' . $studentsclassname . '_compileroutput.log';
