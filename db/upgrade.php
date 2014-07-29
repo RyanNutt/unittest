@@ -3,7 +3,7 @@
  * The upgrade class for this question type.
  *
  * @package    qtype
- * @subpackage javaunittest
+ * @subpackage unittest
  * @author     Gergely Bertalan, bertalangeri@freemail.hu
  * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -13,7 +13,7 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Upgrade code for the javaunittest question type.
+ * Upgrade code for the unittest question type.
  * @param int $oldversion the version we are upgrading from.
  */
 function xmldb_qtype_unittest_upgrade($oldversion) {
@@ -32,13 +32,13 @@ function xmldb_qtype_unittest_upgrade($oldversion) {
 
                  WHERE q.qtype = 'unittest'
                    AND " . $DB->sql_isnotempty('question_answers', 'feedback', false, true);
-        // In Moodle <= 2.0 javaunittest had both question.generalfeedback and question_answers.feedback.
+        // In Moodle <= 2.0 unittest had both question.generalfeedback and question_answers.feedback.
         // This was silly, and in Moodel >= 2.1 only question.generalfeedback. To avoid
         // dataloss, we concatenate question_answers.feedback onto the end of question.generalfeedback.
         $count = $DB->count_records_sql("
                 SELECT COUNT(1) $sql");
         if ($count) {
-            $progressbar = new progress_bar('javaunittest23', 500, true);
+            $progressbar = new progress_bar('unittest23', 500, true);
             $done = 0;
 
             $toupdate = $DB->get_recordset_sql("
@@ -50,7 +50,7 @@ function xmldb_qtype_unittest_upgrade($oldversion) {
                     $sql");
 
             foreach ($toupdate as $data) {
-                $progressbar->update($done, $count, "Updating javaunittest feedback ($done/$count).");
+                $progressbar->update($done, $count, "Updating unittest feedback ($done/$count).");
                 upgrade_set_timeout(60);
                 if ($data->generalfeedbackformat == $data->feedbackformat) {
                     $DB->set_field('question', 'generalfeedback',
@@ -61,28 +61,28 @@ function xmldb_qtype_unittest_upgrade($oldversion) {
                     $newdata = new stdClass();
                     $newdata->id = $data->id;
                     $newdata->generalfeedback =
-                            qtype_javaunittest_convert_to_html($data->generalfeedback, $data->generalfeedbackformat) .
-                            qtype_javaunittest_convert_to_html($data->feedback,        $data->feedbackformat);
+                            qtype_unittest_convert_to_html($data->generalfeedback, $data->generalfeedbackformat) .
+                            qtype_unittest_convert_to_html($data->feedback,        $data->feedbackformat);
                     $newdata->generalfeedbackformat = FORMAT_HTML;
                     $DB->update_record('question', $newdata);
                 }
             }
 
-            $progressbar->update($count, $count, "Updating javaunittest feedback complete!");
+            $progressbar->update($count, $count, "Updating unittest feedback complete!");
             $toupdate->close();
         }
 
-        // javaunittest savepoint reached.
-        upgrade_plugin_savepoint(true, 2011102701, 'qtype', 'javaunittest');
+        // unittest savepoint reached.
+        upgrade_plugin_savepoint(true, 2011102701, 'qtype', 'unittest');
     }
 
     if ($oldversion < 2011102702) {
-        // Then we delete the old question_answers rows for javaunittest questions.
+        // Then we delete the old question_answers rows for unittest questions.
         $DB->delete_records_select('question_answers',
-                "question IN (SELECT id FROM {question} WHERE qtype = 'javaunittest')");
+                "question IN (SELECT id FROM {question} WHERE qtype = 'unittest')");
 
-        // javaunittest savepoint reached.
-        upgrade_plugin_savepoint(true, 2011102702, 'qtype', 'javaunittest');
+        // unittest savepoint reached.
+        upgrade_plugin_savepoint(true, 2011102702, 'qtype', 'unittest');
     }
 
     // Moodle v2.3.0 release upgrade line
@@ -97,7 +97,7 @@ function xmldb_qtype_unittest_upgrade($oldversion) {
  * @param string $text the content to convert to HTML
  * @param int $oldformat One of the FORMAT_... constants.
  */
-function qtype_javaunittest_convert_to_html($text, $oldformat) {
+function qtype_unittest_convert_to_html($text, $oldformat) {
     switch ($oldformat) {
         // Similar to format_text.
 
@@ -118,6 +118,6 @@ function qtype_javaunittest_convert_to_html($text, $oldformat) {
 
         default:
             throw new coding_exception(
-                    'Unexpected text format when upgrading javaunittest questions.');
+                    'Unexpected text format when upgrading unittest questions.');
     }
 }

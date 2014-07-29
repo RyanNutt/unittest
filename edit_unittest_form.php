@@ -6,7 +6,7 @@
  * form a question is created in the database with the form's attributes.
  *
  * @package    qtype
- * @subpackage javaunittest
+ * @subpackage unittest
  * @author     Gergely Bertalan, bertalangeri@freemail.hu
  * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -17,28 +17,28 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * javaunittest question type editing form.
+ * unittest question type editing form.
  *
  */
-class qtype_javaunittest_edit_form extends question_edit_form {
+class qtype_unittest_edit_form extends question_edit_form {
 
     protected function definition_inner($mform) {
 	global $DB, $question;
         global $PAGE; 
         
-        $conf = get_config('qtype_javaunittest');
+        $conf = get_config('qtype_unittest');
         
         // Need to load JS for Ace
         if ($conf->useace) {
-            $PAGE->requires->js('/question/type/javaunittest/ext/ace/src-min-noconflict/ace.js'); 
-            $PAGE->requires->yui_module('moodle-qtype_javaunittest-loader', 'M.javaunittest_loader.edit_page', array(array()));
+            $PAGE->requires->js('/question/type/unittest/ext/ace/src-min-noconflict/ace.js'); 
+            $PAGE->requires->yui_module('moodle-qtype_unittest-loader', 'M.unittest_loader.edit_page', array(array()));
           
           
         }
         
 	$loaded_initialy = optional_param('reloaded_initialy',1,PARAM_INT);
 
-        $qtype = question_bank::get_qtype('javaunittest');
+        $qtype = question_bank::get_qtype('unittest');
 
 	$definitionoptions = $this->_customdata['definitionoptions'];
 	$attachmentoptions = $this->_customdata['attachmentoptions'];
@@ -47,23 +47,23 @@ class qtype_javaunittest_edit_form extends question_edit_form {
         $mform->addElement('hidden', 'defaultmark', 1);
 	
 	//-------------------------- size of the response field                                             
-        $mform->addElement('select', 'responsefieldlines', get_string('responsefieldlines', 'qtype_javaunittest'), $qtype->response_sizes());
+        $mform->addElement('select', 'responsefieldlines', get_string('responsefieldlines', 'qtype_unittest'), $qtype->response_sizes());
         $mform->setDefault('responsefieldlines', 15);
 
 	//-------------------------- "Given Code" Text-Area                                             
-        $mform->addElement('textarea', 'givencode', get_string('givencode', 'qtype_javaunittest'), array('cols'=>80, 'rows'=>20));
+        $mform->addElement('textarea', 'givencode', get_string('givencode', 'qtype_unittest'), array('cols'=>80, 'rows'=>20));
         $mform->setType('givencode', PARAM_RAW);
-        $mform->addHelpButton('givencode', 'givencode', 'qtype_javaunittest');
+        $mform->addHelpButton('givencode', 'givencode', 'qtype_unittest');
 
         //-------------------------- "Test class" Text-Area
-	$mform->addElement('textarea', 'testclassname', get_string('testclassname', 'qtype_javaunittest'), array('cols'=>80,  'rows'=>1));
+	$mform->addElement('textarea', 'testclassname', get_string('testclassname', 'qtype_unittest'), array('cols'=>80,  'rows'=>1));
         $mform->setType('testclassname', PARAM_RAW);
 	$mform->addRule('testclassname', null, 'required');
-        $mform->addHelpButton('testclassname', 'testclassname', 'qtype_javaunittest');
-	$mform->addElement('textarea', 'junitcode', get_string('uploadtestclass', 'qtype_javaunittest'), array('cols'=>80, 'rows'=>20));
+        $mform->addHelpButton('testclassname', 'testclassname', 'qtype_unittest');
+	$mform->addElement('textarea', 'junitcode', get_string('uploadtestclass', 'qtype_unittest'), array('cols'=>80, 'rows'=>20));
         $mform->setType('junitcode', PARAM_RAW);
 	$mform->addRule('junitcode', null, 'required');
-        $mform->addHelpButton('junitcode', 'uploadtestclass', 'qtype_javaunittest');
+        $mform->addHelpButton('junitcode', 'uploadtestclass', 'qtype_unittest');
 
     }
 
@@ -88,6 +88,6 @@ class qtype_javaunittest_edit_form extends question_edit_form {
     }
 
     public function qtype() {
-        return 'javaunittest';
+        return 'unittest';
     }
 }

@@ -3,7 +3,7 @@
  * The test class for this question type.
  *
  * @package    qtype
- * @subpackage javaunittest
+ * @subpackage unittest
  * @author     Gergely Bertalan, bertalangeri@freemail.hu
  * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -13,21 +13,21 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once($CFG->dirroot . '/question/type/javaunittest/questiontype.php');
+require_once($CFG->dirroot . '/question/type/unittest/questiontype.php');
 
 
 /**
- * Unit tests for the javaunittest question type class.
+ * Unit tests for the unittest question type class.
  *
  * @copyright  2010 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_javaunittest_test extends advanced_testcase {
+class qtype_unittest_test extends advanced_testcase {
     protected $qtype;
 
     protected function setUp() {
 
-        $this->qtype = new qtype_javaunittest();
+        $this->qtype = new qtype_unittest();
     }
 
     protected function tearDown() {
@@ -45,7 +45,7 @@ class qtype_javaunittest_test extends advanced_testcase {
 
     public function test_name() {
 
-        $this->assertEquals($this->qtype->name(), 'javaunittest');
+        $this->assertEquals($this->qtype->name(), 'unittest');
     }
 
     public function test_can_analyse_responses() {

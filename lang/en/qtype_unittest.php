@@ -4,7 +4,7 @@
  *
  * @copyright &copy: 2013 Gergely Bertalan, Technical University Berlin
  * @author bertalangeri@freemail.hu
- * @reference: javaunittest 2008, Süreç Özcan, suerec@darkjade.net
+ * @reference: unittest 2008, Süreç Özcan, suerec@darkjade.net
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package so_questiontypes
  */
@@ -15,9 +15,9 @@ $string['graderinfo'] = 'Information for graders';
 $string['nlines'] = '{$a} lines';
 $string['pluginname'] = 'Unit Test';
 $string['pluginname_help'] = 'JUnit question type';
-$string['pluginname_link'] = 'question/type/javaunittest';
-$string['pluginnameadding'] = 'Adding an javaunittest question';
-$string['pluginnameediting'] = 'Editing an javaunittest question';
+$string['pluginname_link'] = 'question/type/unittest';
+$string['pluginnameadding'] = 'Adding an Unit Test question';
+$string['pluginnameediting'] = 'Editing an Unit Test question';
 $string['pluginnamesummary'] = 'Allows a Java-code response which is evaluated by a defined JUnit test';
 $string['responsefieldlines'] = 'Input box size';
 $string['responseformat'] = 'Response format';

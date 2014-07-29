@@ -3,7 +3,7 @@
  * The renderer type class for this question type.
  *
  * @package    qtype
- * @subpackage javaunittest
+ * @subpackage unittest
  * @author     Gergely Bertalan, bertalangeri@freemail.hu
  * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -14,16 +14,16 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Generates the output for javaunittest questions.
+ * Generates the output for unittest questions.
  *
  * @copyright  2009 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_javaunittest_renderer extends qtype_renderer {
+class qtype_unittest_renderer extends qtype_renderer {
 
     /**
      * Used to keep the JavaScript from including more than once, even when
-     * multiple javaunittest questions are on the same page. 
+     * multiple unittest questions are on the same page. 
      * @var type 
      */
     private static $jsInitCalled = false; 
@@ -44,7 +44,7 @@ class qtype_javaunittest_renderer extends qtype_renderer {
         $step = $qa->get_last_step_with_qt_var('answer');
 
 	// Get the question options to show the question text
-	$question->options = $DB->get_record('qtype_javaunittest_options' , array('questionid' =>$question->id));
+	$question->options = $DB->get_record('qtype_unittest_options' , array('questionid' =>$question->id));
 	$studentscode = $question->options->givencode;
         if (empty($options->readonly)) {
             $answer = $responseoutput->response_area_input('answer', $qa, $step, $question->responsefieldlines, $options->context, $studentscode);
@@ -62,12 +62,12 @@ class qtype_javaunittest_renderer extends qtype_renderer {
         $result .= html_writer::tag('div', $answer, array('class' => 'answer'));
         $result .= html_writer::end_tag('div');
 
-        $conf = get_config('qtype_javaunittest');
+        $conf = get_config('qtype_unittest');
         
         // Need to load JS for Ace
         if ($conf->useace) { // && !self::$jsInitCalled) {
-            $PAGE->requires->js('/question/type/javaunittest/ext/ace/src-min-noconflict/ace.js'); 
-            $PAGE->requires->yui_module('moodle-qtype_javaunittest-loader', 'M.javaunittest_loader.question_page', array(array('element' => $inputname)));
+            $PAGE->requires->js('/question/type/unittest/ext/ace/src-min-noconflict/ace.js'); 
+            $PAGE->requires->yui_module('moodle-qtype_unittest-loader', 'M.unittest_loader.question_page', array(array('element' => $inputname)));
             self::$jsInitCalled = true; 
         }
         
@@ -112,7 +112,7 @@ class qtype_javaunittest_renderer extends qtype_renderer {
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class qtype_javaunittest_format_renderer_base extends plugin_renderer_base {
+abstract class qtype_unittest_format_renderer_base extends plugin_renderer_base {
     /**
      * Render the students respone when the question is in read-only mode.
      * @param string $name the variable name this input edits.
@@ -146,18 +146,18 @@ abstract class qtype_javaunittest_format_renderer_base extends plugin_renderer_b
 
 
 /**
- * An javaunittest format renderer for javaunittests where the student should use a plain
+ * An unittest format renderer for unittests where the student should use a plain
  * input box, but with a normal, proportional font.
  *
  * @copyright  2011 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_javaunittest_format_plain_renderer extends plugin_renderer_base {
+class qtype_unittest_format_plain_renderer extends plugin_renderer_base {
     /**
      * @return string the HTML for the textarea.
      */
     protected function textarea($response, $studentscode, $lines, $attributes) {
-        $attributes['class'] = $this->class_name() . ' qtype_javaunittest_response';
+        $attributes['class'] = $this->class_name() . ' qtype_unittest_response';
         $attributes['rows'] = $lines;
         $attributes['cols'] = 60;
 	
@@ -168,7 +168,7 @@ class qtype_javaunittest_format_plain_renderer extends plugin_renderer_base {
     }
 
     protected function class_name() {
-        return 'qtype_javaunittest_plain';
+        return 'qtype_unittest_plain';
     }
 
     public function response_area_read_only($name, $qa, $step, $lines, $context, $studentscode) {

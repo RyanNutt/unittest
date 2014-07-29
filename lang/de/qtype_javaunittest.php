@@ -1,10 +1,10 @@
 <?php
 /**
- * Strings for component 'qtype_javaunittest', language 'de', branch 'MOODLE_20_STABLE'
- * Strings fuer das Moodle-Modul 'qtype_javaunittest', Sprache 'de'
+ * Strings for component 'qtype_unittest', language 'de', branch 'MOODLE_20_STABLE'
+ * Strings fuer das Moodle-Modul 'qtype_unittest', Sprache 'de'
  *
  * @package    qtype
- * @subpackage javaunittest
+ * @subpackage unittest
  * @author     Gergely Bertalan, bertalangeri@freemail.hu
  * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -12,9 +12,9 @@
 
 $string['graderinfo'] = 'Informationen für Bewerter';
 $string['nlines'] = '{$a} Linien';
-$string['pluginname'] = 'javaunittest';
+$string['pluginname'] = 'unittest';
 $string['pluginname_help'] = 'JUnit Fragetyp';
-$string['pluginname_link'] = 'question/type/javaunittest';
+$string['pluginname_link'] = 'question/type/unittest';
 $string['pluginnameadding'] = 'Hinzufügen einer JUnit-Frage';
 $string['pluginnameediting'] = 'Editieren einer JUnit-Frage';
 $string['pluginnamesummary'] = 'Freitextantworten (Java-Code) werden von selbsgeschriebenen JUnit-Tests evaluiert.';

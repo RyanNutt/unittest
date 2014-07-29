@@ -3,7 +3,7 @@
  * The upgrade test class for this question type.
  *
  * @package    qtype
- * @subpackage javaunittest
+ * @subpackage unittest
  * @author     Gergely Bertalan, bertalangeri@freemail.hu
  * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -17,14 +17,14 @@ require_once($CFG->dirroot . '/question/engine/upgrade/tests/helper.php');
 
 
 /**
- * Testing the upgrade of javaunittest question attempts.
+ * Testing the upgrade of unittest question attempts.
  *
  * @copyright  2009 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_javaunittest_attempt_upgrader_test extends question_attempt_upgrader_test_base {
+class qtype_unittest_attempt_upgrader_test extends question_attempt_upgrader_test_base {
 
-    public function test_javaunittest_deferredfeedback_history98220() {
+    public function test_unittest_deferredfeedback_history98220() {
         $quiz = (object) array(
             'id' => '4140',
             'course' => '5012',
@@ -86,7 +86,7 @@ class qtype_javaunittest_attempt_upgrader_test extends question_attempt_upgrader
             'questiontextformat' => '1',
             'defaultmark' => '2',
             'penalty' => '0',
-            'qtype' => 'javaunittest',
+            'qtype' => 'unittest',
             'length' => '1',
             'stamp' => 'learn.open.ac.uk+100205101651+5eB30s',
             'version' => 'learn.open.ac.uk+100209161823+oZCX9n',
@@ -258,7 +258,7 @@ class qtype_javaunittest_attempt_upgrader_test extends question_attempt_upgrader
         $this->compare_qas($expectedqa, $qa);
     }
 
-    public function test_javaunittest_deferredfeedback_history820() {
+    public function test_unittest_deferredfeedback_history820() {
         $quiz = (object) array(
             'id' => '142',
             'course' => '187',
@@ -315,7 +315,7 @@ class qtype_javaunittest_attempt_upgrader_test extends question_attempt_upgrader
             'questiontextformat' => '1',
             'defaultmark' => '0',
             'penalty' => '0',
-            'qtype' => 'javaunittest',
+            'qtype' => 'unittest',
             'length' => '1',
             'stamp' => 'learn.open.ac.uk+070312094434+k2HaUF',
             'version' => 'learn.open.ac.uk+070501173219+spx2IM',
@@ -438,7 +438,7 @@ class qtype_javaunittest_attempt_upgrader_test extends question_attempt_upgrader
         $this->compare_qas($expectedqa, $qa);
     }
 
-    public function test_javaunittest_deferredfeedback_missing() {
+    public function test_unittest_deferredfeedback_missing() {
         $quiz = (object) array(
             'id' => '142',
             'course' => '187',
@@ -495,7 +495,7 @@ class qtype_javaunittest_attempt_upgrader_test extends question_attempt_upgrader
             'questiontextformat' => '1',
             'defaultmark' => '0',
             'penalty' => '0',
-            'qtype' => 'javaunittest',
+            'qtype' => 'unittest',
             'length' => '1',
             'stamp' => 'learn.open.ac.uk+070312094434+k2HaUF',
             'version' => 'learn.open.ac.uk+070501173219+spx2IM',

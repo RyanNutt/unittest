@@ -4,7 +4,7 @@
  * The question class for this question type.
  *
  * @package    qtype
- * @subpackage javaunittest
+ * @subpackage unittest
  * @author     Gergely Bertalan, bertalangeri@freemail.hu
  * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -15,7 +15,7 @@ defined('MOODLE_INTERNAL') || die();
 
 
 /**
- * Represents an javaunittest question.
+ * Represents an unittest question.
  *
  */
 class qtype_unittest_question extends question_graded_automatically {
@@ -28,11 +28,11 @@ class qtype_unittest_question extends question_graded_automatically {
 
     /**
      * @param moodle_page the page we are outputting to.
-     * @return qtype_javaunittest_format_renderer_base the response-format-specific renderer.
+     * @return qtype_unittest_format_renderer_base the response-format-specific renderer.
      */
     public function get_format_renderer(moodle_page $page) {
 
-        return $page->get_renderer('qtype_javaunittest', 'format_' . $this->responseformat);
+        return $page->get_renderer('qtype_unittest', 'format_' . $this->responseformat);
     }
 
      /**
@@ -136,7 +136,7 @@ class qtype_unittest_question extends question_graded_automatically {
 	//create a unique temp folder to keep the data together in one place 
         $cfg_dataroot_backslashes = $CFG->dataroot;
         $cfg_dataroot = str_replace("\\", "/", $cfg_dataroot_backslashes);	
-        $temp_folder = $cfg_dataroot . '/javaunittest_temp_' . $studentid . '_' . $questionid . '_' . $attemptid;
+        $temp_folder = $cfg_dataroot . '/unittest_temp_' . $studentid . '_' . $questionid . '_' . $attemptid;
 	
 	if (file_exists($temp_folder)) {
 		$this->delTree($temp_folder);
@@ -145,7 +145,8 @@ class qtype_unittest_question extends question_graded_automatically {
 
 
 	//create the test class from the database and save it in the temporary folder
-	$options = $DB->get_record('qtype_javaunittest_options', array('questionid' => $questionid));	
+	$options = $DB->get_record('qtype_unittest_options', array('questionid' => $questionid));
+        var_dump($options); 
 	$testclassname = $options->testclassname;
 
 	$junitcode = $options->junitcode;
@@ -226,32 +227,32 @@ class qtype_unittest_question extends question_graded_automatically {
 		//as correct. 
 		if($numtest == 0){
 			$fraction = 1; 
-			$this->automatic_feedback = get_string('JE', 'qtype_javaunittest') . "\n\n";
+			$this->automatic_feedback = get_string('JE', 'qtype_unittest') . "\n\n";
 			
 		}
 		//CASE 2
 		//100% correct answer
 		else if($totalerror == 0){
 			$fraction = 1; 
-			$this->automatic_feedback = get_string('CA', 'qtype_javaunittest') . "\n\n" . $automatic_feedback;
+			$this->automatic_feedback = get_string('CA', 'qtype_unittest') . "\n\n" . $automatic_feedback;
 		}
 		//CASE 3
 		//partially correct answer
 		else if($numtest > $totalerror){
 			$fraction = 1 - round(( $totalerror / $numtest),2);
-			$this->automatic_feedback = get_string('PCA', 'qtype_javaunittest') . "\n\n" . $automatic_feedback;
+			$this->automatic_feedback = get_string('PCA', 'qtype_unittest') . "\n\n" . $automatic_feedback;
 		}
 		//CASE 4
 		// wrong answer
 		else{
 			$fraction = 0;
-			$this->automatic_feedback = get_string('WA', 'qtype_javaunittest') . "\n\n" . $automatic_feedback;
+			$this->automatic_feedback = get_string('WA', 'qtype_unittest') . "\n\n" . $automatic_feedback;
 		}
 	}
 	// Doesn't compile => wrong answer. We grade the response with 0 point
 	else{
 		$fraction = 0;
-		$this->automatic_feedback = get_string('CE', 'qtype_javaunittest') . "\n\n" . $compileroutput;	
+		$this->automatic_feedback = get_string('CE', 'qtype_unittest') . "\n\n" . $compileroutput;	
 	}
 
     //after the grade is computed, a feedback is created. The feedback is the compiler output (in the case of compilation error)
@@ -293,7 +294,7 @@ class qtype_unittest_question extends question_graded_automatically {
      * @return $compileroutput the output of the compiler
      */  
     function compile($studentclass, $temp_folder, $studentsclassname) {
-        $conf = get_config('qtype_javaunittest');
+        $conf = get_config('qtype_unittest');
         
 //work out the compile command line
         $compileroutputfile = $temp_folder . '/' . $studentsclassname . '_compileroutput.log';
@@ -320,7 +321,7 @@ class qtype_unittest_question extends question_graded_automatically {
      * @return $executionoutput the output of the JUnit test
      */
     function execute($temp_folder, $testFile, $testFileName, $studentclass, $studentsclassname){
-        $conf = get_config('qtype_javaunittest');
+        $conf = get_config('qtype_unittest');
         
 	//create the log file to store the output of the JUnit test
         $executionoutputfile = $temp_folder. '/' . $studentsclassname . '_executionoutput.log';
@@ -422,7 +423,7 @@ class qtype_unittest_question extends question_graded_automatically {
             // Response attachments visible if the question has them.
             return $this->responseformat === 'editorfilepicker';
 
-        } else if ($component == 'qtype_javaunittest' && $filearea == 'graderinfo') {
+        } else if ($component == 'qtype_unittest' && $filearea == 'graderinfo') {
             return $options->manualcomment;
 
         } else {

@@ -1,5 +1,5 @@
-YUI.add('moodle-qtype_javaunittest-loader', function(Y) {
-    var ModulenameNAME = 'javaunittest_loader';
+YUI.add('moodle-qtype_unittest-loader', function(Y) {
+    var ModulenameNAME = 'unittest_loader';
     var MODULENAME = function() {
         MODULENAME.superclass.constructor.apply(this, arguments);
     };
@@ -13,9 +13,9 @@ YUI.add('moodle-qtype_javaunittest-loader', function(Y) {
                  aparam : {}
         } 
     });
-    M.javaunittest_loader = M.javaunittest_loader || {}; // This line use existing name path if it exists, otherwise create a new one. 
+    M.unittest_loader = M.unittest_loader || {}; // This line use existing name path if it exists, otherwise create a new one. 
         // This is to avoid to overwrite previously loaded module with same name.
-    M.javaunittest_loader.init = function(config) { // 'config' contains the parameter values
+    M.unittest_loader.init = function(config) { // 'config' contains the parameter values
         
         return new MODULENAME(config); // 'config' contains the parameter values
     };
@@ -27,7 +27,7 @@ YUI.add('moodle-qtype_javaunittest-loader', function(Y) {
 //  textarea.val(editor.getSession().getValue());
 //});
     
-    M.javaunittest_loader.edit_page = function(config) {
+    M.unittest_loader.edit_page = function(config) {
         var elGiven = document.getElementById('id_givencode');
         var divGiven = document.createElement('div');
         divGiven.setAttribute('id', 'given_code');
@@ -62,7 +62,7 @@ YUI.add('moodle-qtype_javaunittest-loader', function(Y) {
         return new MODULENAME(config); 
     }
     
-    M.javaunittest_loader.question_page = function(config) {
+    M.unittest_loader.question_page = function(config) {
         var el = document.getElementById(config.element);
         var div = document.createElement('div');
         div.setAttribute('style', 'height:' + el.scrollHeight + 'px;width:' + el.scrollWidth + 'px;');

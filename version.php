@@ -4,7 +4,7 @@
  *
  * @copyright &copy: 2013 Gergely Bertalan, Technical University Berlin
  * @author bertalangeri@freemail.hu
- * @reference: javaunittest 2008, Süreç Özcan, suerec@darkjade.net
+ * @reference: unittest 2008, Süreç Özcan, suerec@darkjade.net
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License
  * @package so_questiontypes
  */

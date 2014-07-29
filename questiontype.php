@@ -3,7 +3,7 @@
  * The question type class for this question type.
  *
  * @package    qtype
- * @subpackage javaunittest
+ * @subpackage unittest
  * @author     Gergely Bertalan, bertalangeri@freemail.hu
  * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -16,7 +16,7 @@ require_once($CFG->libdir . '/questionlib.php');
 
 
 /**
- * The javaunittest question type.
+ * The unittest question type.
  *
  * @copyright  2005 Mark Nielsen
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,7 +36,7 @@ class qtype_unittest extends question_type {
     public function get_question_options($question) {
 
         global $DB;
-        $question->options = $DB->get_record('qtype_javaunittest_options', array('questionid' => $question->id), '*', MUST_EXIST);
+        $question->options = $DB->get_record('qtype_unittest_options', array('questionid' => $question->id), '*', MUST_EXIST);
         parent::get_question_options($question);
     }
 
@@ -51,7 +51,7 @@ class qtype_unittest extends question_type {
         $context = $formdata->context;
 	$update = true;
 
-        $options = $DB->get_record('qtype_javaunittest_options', array('questionid' => $formdata->id));
+        $options = $DB->get_record('qtype_unittest_options', array('questionid' => $formdata->id));
 
         if (!$options) {
 	    $update = false;
@@ -66,9 +66,9 @@ class qtype_unittest extends question_type {
 	$options->junitcode = $formdata->junitcode;
 
 	if ($update) {
-            $DB->update_record("qtype_javaunittest_options", $options);
+            $DB->update_record("qtype_unittest_options", $options);
         } else {
-            $DB->insert_record("qtype_javaunittest_options", $options);
+            $DB->insert_record("qtype_unittest_options", $options);
         }	
 
     }
@@ -81,7 +81,7 @@ class qtype_unittest extends question_type {
      */
     public function delete_question($questionid, $contextid) {
         global $DB;
-        $DB->delete_records('qtype_javaunittest_options', array('questionid' => $questionid));
+        $DB->delete_records('qtype_unittest_options', array('questionid' => $questionid));
 
         parent::delete_question($questionid, $contextid);
     }
@@ -107,7 +107,7 @@ class qtype_unittest extends question_type {
      */
     public function response_formats() {
 
-        return array('plain' => get_string('formatplain', 'qtype_javaunittest')
+        return array('plain' => get_string('formatplain', 'qtype_unittest')
         );
     }
 
@@ -118,7 +118,7 @@ class qtype_unittest extends question_type {
 
         $choices = array();
         for ($lines = 5; $lines <= 40; $lines += 5) {
-            $choices[$lines] = get_string('nlines', 'qtype_javaunittest', $lines);
+            $choices[$lines] = get_string('nlines', 'qtype_unittest', $lines);
         }
         return $choices;
     }
@@ -128,13 +128,13 @@ class qtype_unittest extends question_type {
         parent::move_files($questionid, $oldcontextid, $newcontextid);
         $fs = get_file_storage();
         $fs->move_area_files_to_new_context($oldcontextid,
-                $newcontextid, 'qtype_javaunittest', 'graderinfo', $questionid);
+                $newcontextid, 'qtype_unittest', 'graderinfo', $questionid);
     }
 
     protected function delete_files($questionid, $contextid) {
 
         parent::delete_files($questionid, $contextid);
         $fs = get_file_storage();
-        $fs->delete_area_files($contextid, 'qtype_javaunittest', 'graderinfo', $questionid);
+        $fs->delete_area_files($contextid, 'qtype_unittest', 'graderinfo', $questionid);
     }
 }
