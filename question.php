@@ -11,6 +11,8 @@
  */
 
 require_once(dirname(__FILE__) . '/config.php');
+require_once(dirname(__FILE__).'/junit_parser.php');
+
 defined('MOODLE_INTERNAL') || die();
 
 
@@ -139,7 +141,7 @@ class qtype_unittest_question extends question_graded_automatically {
 	$step = new question_attempt_step();
 	$studentid = $step->get_user_id();
 	$questionid = $this->id;
-
+         
 	$attemptid = optional_param('attempt', '', PARAM_INT);
 
 	//if we are in edit question mode we have no attemptid => use any attemptid
@@ -222,27 +224,9 @@ class qtype_unittest_question extends question_graded_automatically {
             	//which means that 1 out of 4 test cases didn't pass the JUnit test
             	//In the second line it says "Time ..."
 
-                $numTests = 0;
-                $numFailures = 0;
-                $numErrors = 0;
-                
-                if (preg_match('/Tests run:.*?(\d+)/is', $cleaned_executionoutput, $matches)) {
-                    if (!empty($matches[1])) {
-                        $numTests = $matches[1]; 
-                    }
-                }
-                if (preg_match('/Failures:.*?(\d+?)/i', $cleaned_executionoutput, $matches)) {
-                    if (!empty($matches[1])) {
-                        $numFailures = $matches[1];
-                    }
-                }
-                if (preg_match('/Errors:.*?(\d+?)/is', $cleaned_executionoutput, $matches)) {
-                    if (!empty($matches[1])) {
-                        $numErrors = $matches[1];
-                    }
-                }
-                
-                $totalErrors = $numFailures + $numErrors; 
+                $junit = new junit_parser($cleaned_executionoutput);
+                              
+                $totalErrors = $junit->errorCount + $junit->failureCount;
                 
             	// Discard the summary.
             	//$pos = strpos($executionoutput, 'Time') + 1; //get the pos in the string where 'Time' starts
@@ -257,38 +241,41 @@ class qtype_unittest_question extends question_graded_automatically {
 		//after we counted the failures and errors we can grade the response
 
 		//CASE 1
-		//if there is something wrong with the test file this is our fault -> we did not created the question
-		//properly. Therefore we grade the student's answer as correct. We don't know whether it is correct or not 
-		//but since our JUnit testfile is wrong and we could not execute the test because of our fault, we grade the answer
-		//as correct. 
-		if($numTests == 0){
-			$fraction = 1; 
-			$this->automatic_feedback = get_string('JE', 'qtype_unittest') . "\n\n";
+		/* No tests were run. This could be due to either an issue with 
+                 * the JUnit test file, in which case it's something that needs
+                 * to be fixed. Or, the student could have edited their code 
+                 * causing the tests to fail. For example, changing the method
+                 * signature would cause an error in the JUnit build, which would
+                 * then cause no tests to be run. 
+                 */
+		if($junit->testCount == 0){
+			$fraction = 0; 
+			$this->automatic_feedback = get_string('JE', 'qtype_unittest') . "\n\n" . $automatic_feedback . "\n\n" . $this->resultString('JE');
 			
 		}
 		//CASE 2
 		//100% correct answer
 		else if($totalErrors == 0){
 			$fraction = 1; 
-			$this->automatic_feedback = get_string('CA', 'qtype_unittest') . "\n\n" . $automatic_feedback;
+			$this->automatic_feedback = get_string('CA', 'qtype_unittest') . "\n\n" . $automatic_feedback . "\n\n" . $this->resultString('CA');
 		}
 		//CASE 3
 		//partially correct answer
-		else if($numTests > $totalErrors){
-			$fraction = 1 - round(( 1.0 * $totalErrors / $numTests),2);
-			$this->automatic_feedback = get_string('PCA', 'qtype_unittest') . "\n\n" . $automatic_feedback;
+		else if($junit->testCount > $totalErrors){
+			$fraction = 1 - round(( 1.0 * $totalErrors / $junit->testCount),2);
+			$this->automatic_feedback = get_string('PCA', 'qtype_unittest') . "\n\n" . $automatic_feedback . "\n\n" . $this->resultString('PCA');
 		}
 		//CASE 4
 		// wrong answer
 		else{
 			$fraction = 0;
-			$this->automatic_feedback = get_string('WA', 'qtype_unittest') . "\n\n" . $automatic_feedback;
+			$this->automatic_feedback = get_string('WA', 'qtype_unittest') . "\n\n" . $automatic_feedback . "\n\n" . $this->resultString('WA');
 		}
 	}
 	// Doesn't compile => wrong answer. We grade the response with 0 point
 	else{
 		$fraction = 0;
-		$this->automatic_feedback = get_string('CE', 'qtype_unittest') . "\n\n" . $compileroutput;	
+		$this->automatic_feedback = get_string('CE', 'qtype_unittest') . "\n\n" . $compileroutput . "\n\n" . $this->resultString('CE');	
 	}
 
     //after the grade is computed, a feedback is created. The feedback is the compiler output (in the case of compilation error)
@@ -527,5 +514,47 @@ class qtype_unittest_question extends question_graded_automatically {
         }
         
         return proc_close($proc_id); 
+    }
+    
+    /**
+     * Formats the result code for inclusion in the saved output. 
+     * 
+     * @param type $tag
+     * @return String
+     */
+    private function resultString($tag) {
+        return '[unittest:' . $tag . ']';
+    }
+    
+    /**
+     * Parse the results from JUnit
+     * 
+     * @param type $result
+     * @return stdClass
+     */
+    private function parseResult($result) {
+        $out = new stdClass(); 
+        
+        $out->numTests = 0;
+        $out->numFailures = 0;
+        $out->numErrors = 0;
+
+        if (preg_match('/Tests run:.*?(\d+)/is', $result, $matches)) {
+            if (!empty($matches[1])) {
+                $out->numTests = $matches[1]; 
+            }
+        }
+        if (preg_match('/Failures:.*?(\d+?)/i', $result, $matches)) {
+            if (!empty($matches[1])) {
+                $out->numFailures = $matches[1];
+            }
+        }
+        if (preg_match('/Errors:.*?(\d+?)/is', $result, $matches)) {
+            if (!empty($matches[1])) {
+                $out->numErrors = $matches[1];
+            }
+        } 
+        
+        return $out; 
     }
 }

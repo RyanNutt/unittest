@@ -29,13 +29,17 @@ $string['givencode'] = 'Given code';
 $string['givencode_help'] = 'Code which is provided by the instructor';
 $string['loadedtestclassheader'] = 'Load test file';
 
+$string['tests'] = 'tests';
+$string['correcttests'] = 'correct'; 
+$string['outof'] = 'out of'; 
+$string['notests'] = 'Zero tests run'; 
 
 //STRINGS FOR FEEDBACK
-$string['CA'] = 'CORRECT ANSWER';
-$string['PCA'] = 'PARTIALLY CORRECT ANSWER';
-$string['WA'] = 'WRONG ANSWER';
-$string['CE'] = 'COMPILER ERROR';
-$string['JE'] = 'JUNIT TEST FILE ERROR: Test cannot be executed. The test class is either missing or contains compilation error(s).';
+$string['CA'] = 'Correct Answer';
+$string['PCA'] = 'Partially Correct Answer';
+$string['WA'] = 'Incorrect Answer';
+$string['CE'] = 'Compile Error';
+$string['JE'] = 'JUnit Error';
 
 $string['pathtojava'] = 'Path to Java';
 $string['configpathtojava'] = 'Server path to Java';

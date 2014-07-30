@@ -1,20 +1,19 @@
-.que.unittest textarea.qtype_unittest_response {
-    width: 100%;
-}
-.que.unittest textarea.qtype_unittest_response.qtype_unittest_plain {
-    white-space: pre-wrap;
-    font: inherit;
-}
-.que.unittest textarea.qtype_unittest_response.qtype_unittest_monospaced {
-    white-space: pre;
-    font-family: Andale Mono, Monaco, Courier New, DejaVu Sans Mono, monospace;
-}
-.que.unittest .qtype_unittest_response {
-    min-height: 3em;
-}
-.que.unittest .qtype_unittest_response.readonly {
-    background-color: white;
-}
-.que.unittest div.qtype_unittest_response textarea {
-    width: 100%;
-}
+div.unittest_results { padding-top: 8px; padding-bottom: 8px; }
+div.unittest_results .progress { width: 100%; border-radius: 8px; height: 16px; background: #ee7800; }
+div.unittest_results .progress div.correct { background: #76EE00; float: left; }
+div.unittest_results .left { float: left; text-align: left; }
+div.unittest_results .right { float: right; text-align: right; }
+div.unittest_results .clear:before, div.unittest_results .clear:after { content: " "; display: table; }
+div.unittest_results .clear:after { clear: both; }
+
+.que.unittest textarea.qtype_unittest_response { width: 100%; }
+
+.que.unittest textarea.qtype_unittest_response.qtype_unittest_plain { white-space: pre-wrap; font: inherit; }
+
+.que.unittest textarea.qtype_unittest_response.qtype_unittest_monospaced { white-space: pre; font-family: Andale Mono, Monaco, Courier New, DejaVu Sans Mono, monospace; }
+
+.que.unittest .qtype_unittest_response { min-height: 3em; }
+
+.que.unittest .qtype_unittest_response.readonly { background-color: white; }
+
+.que.unittest div.qtype_unittest_response textarea { width: 100%; }

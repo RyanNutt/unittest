@@ -3,8 +3,9 @@
  * The renderer type class for this question type.
  *
  * @package    qtype
+ * @author      Ryan Nutt
  * @subpackage unittest
- * @author     Gergely Bertalan, bertalangeri@freemail.hu
+ * @reference     Gergely Bertalan, bertalangeri@freemail.hu
  * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -62,15 +63,56 @@ class qtype_unittest_renderer extends qtype_renderer {
         $result .= html_writer::tag('div', $answer, array('class' => 'answer'));
         $result .= html_writer::end_tag('div');
 
-        $conf = get_config('qtype_unittest');
         
+        $attemptid = optional_param('attempt', '', PARAM_INT);
+	$question = $qa->get_question();
+	$step = $qa->get_last_step_with_qt_var('answer');
+	$studentid = $step->get_user_id();
+	$questionid = $question->id;
+
+	//compute the unique id of the feedback
+	$unique_answerid = ($studentid + $questionid * $attemptid) + ($studentid * $questionid + $attemptid);
+
+	//get the feedback from the database
+	$answer = $DB->get_records('question_answers', array('question' => $unique_answerid));
+	$answer = array_shift($answer);
+        
+        if (!empty($answer->feedback)) {
+            
+            $junit = new junit_parser($answer->feedback);
+            
+            if ($junit->testCount == 0) {
+                $percentage = 0; 
+            }
+            else {
+                $percentage = round(($junit->testCount - ($junit->errorCount + $junit->failureCount)) / $junit->testCount * 100);
+            }
+            $correct = $junit->testCount - $junit->errorCount - $junit->failureCount;
+            $result .= '<div class="unittest_results clear">';
+            $result .= '<div class="progress">';
+            $result .= '<div class="correct" style="width:' . $percentage . '%">&nbsp;</div>'; 
+            $result .= '</div>'; // .progress
+            $result .= '<div class="left">' . get_string($junit->status, 'qtype_unittest') .'</div>';
+            $result .= '<div class="right">';
+            if ($junit->testCount == 0) {
+                $result .= get_string('notests', 'qtype_unittest');
+            }
+            else {
+                $result .= $correct . ' ' . get_string('outof', 'qtype_unittest') . ' ' . $junit->testCount . ' ' . get_string('tests', 'qtype_unittest') . ' ' . get_string('correcttests', 'qtype_unittest'); 
+            }
+            $result .= '</div>'; //.right 
+            $result .= '<br style="clear:both;">'; 
+            $result .= '</div>';
+        }
+        
+        $conf = get_config('qtype_unittest');        
         // Need to load JS for Ace
         if ($conf->useace) { // && !self::$jsInitCalled) {
             $PAGE->requires->js('/question/type/unittest/ext/ace/src-min-noconflict/ace.js'); 
             $PAGE->requires->yui_module('moodle-qtype_unittest-loader', 'M.unittest_loader.question_page', array(array('element' => $inputname)));
             self::$jsInitCalled = true; 
         }
-        
+        //echo '<pre>'.print_r($question, true).'</pre>'; 
         return $result;
     }
 
