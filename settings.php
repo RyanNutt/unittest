@@ -1,4 +1,13 @@
 <?php
+/**
+ * Settings file for qtype_unittest Moodle plugin
+ * 
+ * @author      Ryan Nutt
+ * @link        http://github.com/RyanNutt/unittest
+ * @package     qtype
+ * @subpackage  unittest
+ * @license     GPLv3
+ */
 
 $settings->add(new admin_setting_configexecutable('qtype_unittest/pathtojava',
         get_string('pathtojava', 'qtype_unittest'), get_string('configpathtojava', 'qtype_unittest'),

@@ -1,9 +1,13 @@
 <?php
 /**
- * Thepluginfile class for this question type.
+ * The  pluginfile class for this question type.
  *
  * @package    qtype
  * @subpackage unittest
+ * 
+ * @author      Ryan Nutt
+ * @link        http://github.com/RyanNutt/unittest
+ * 
  * @author     Gergely Bertalan, bertalangeri@freemail.hu
  * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

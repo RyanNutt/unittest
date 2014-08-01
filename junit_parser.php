@@ -1,4 +1,12 @@
 <?php
+/**
+ * Class to parse JUnit 4 results 
+ * 
+ * @author      Ryan Nutt
+ * @link        http://github.com/RyanNutt/unittest
+ * @package     qtype
+ * @subpackage  unittest
+ */
 
 /**
  * Data class containing information on a JUnit test result

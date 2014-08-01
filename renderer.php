@@ -2,12 +2,14 @@
 /**
  * The renderer type class for this question type.
  *
- * @package    qtype
  * @author      Ryan Nutt
- * @subpackage unittest
- * @reference     Gergely Bertalan, bertalangeri@freemail.hu
- * @reference  sojunit 2008, Süreç Özcan, suerec@darkjade.net
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @link        http://github.com/RyanNutt/unittest
+ *  
+ * @package     qtype
+ * @subpackage  unittest
+ * @reference   Gergely Bertalan, bertalangeri@freemail.hu
+ * @reference   sojunit 2008, Süreç Özcan, suerec@darkjade.net
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
