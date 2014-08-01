@@ -37,7 +37,7 @@ class qtype_unittest_renderer extends qtype_renderer {
             question_display_options $options) {
 
 	global $DB, $PAGE;
-
+        
         $question = $qa->get_question();
         $responseoutput = $question->get_format_renderer($this->page);
 
@@ -89,20 +89,24 @@ class qtype_unittest_renderer extends qtype_renderer {
             }
             $correct = $junit->testCount - $junit->errorCount - $junit->failureCount;
             $result .= '<div class="unittest_results clear">';
-            $result .= '<div class="progress">';
-            $result .= '<div class="correct" style="width:' . $percentage . '%">&nbsp;</div>'; 
-            $result .= '</div>'; // .progress
-            if (!empty($junit->status)) {
+            if ($options->marks) {
+                $result .= '<div class="progress">';
+                $result .= '<div class="correct" style="width:' . $percentage . '%">&nbsp;</div>'; 
+                $result .= '</div>'; // .progress
+            }
+            if ($options->correctness && !empty($junit->status)) {
                 $result .= '<div class="left">' . get_string($junit->status, 'qtype_unittest') .'</div>';
             }
+            if ($options->marks) {
             $result .= '<div class="right">';
-            if ($junit->testCount == 0) {
-                $result .= get_string('notests', 'qtype_unittest');
+                if ($junit->testCount == 0) {
+                    $result .= get_string('notests', 'qtype_unittest');
+                }
+                else {
+                    $result .= $correct . ' ' . get_string('outof', 'qtype_unittest') . ' ' . $junit->testCount . ' ' . get_string('tests', 'qtype_unittest') . ' ' . get_string('correcttests', 'qtype_unittest'); 
+                }
+                $result .= '</div>'; //.right
             }
-            else {
-                $result .= $correct . ' ' . get_string('outof', 'qtype_unittest') . ' ' . $junit->testCount . ' ' . get_string('tests', 'qtype_unittest') . ' ' . get_string('correcttests', 'qtype_unittest'); 
-            }
-            $result .= '</div>'; //.right 
             $result .= '<br style="clear:both;">'; 
             $result .= '</div>';
         }
