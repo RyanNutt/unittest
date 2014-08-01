@@ -187,7 +187,7 @@ class qtype_unittest_question extends question_graded_automatically {
 
 	$studentclass_path = $temp_folder . '/';
 	$studentclass =  $studentclass_path . $studentsclassname . '.java';
-
+        
 	touch($studentclass);
 	$fh = fopen($studentclass, 'w') or die("can't open file");
 	fwrite($fh, $studentscode);
@@ -325,8 +325,8 @@ class qtype_unittest_question extends question_graded_automatically {
         $compileroutputfile = $temp_folder . '/' . $studentsclassname . '_compileroutput.log';
 	touch($compileroutputfile);
 			
-        $command = '"' . $conf->pathtojavac . '" -cp "' . $conf->pathtojunit . '" ' . $studentclass;// . ' -Xstdout ' . $compileroutputfile;
-        
+        $command = '"' . $conf->pathtojavac . '" -cp "' . $conf->pathtojunit . '" "' . $studentclass .'"';// . ' -Xstdout ' . $compileroutputfile;
+        //die($command); 
         //execute the command
 	//$output = shell_exec(escapeshellcmd($command));
 	$stdout = '';
@@ -359,12 +359,12 @@ class qtype_unittest_question extends question_graded_automatically {
         
 	//create the log file to store the output of the JUnit test
         $executionoutputfile = $temp_folder. '/' . $studentsclassname . '_executionoutput.log';
-	$testFileName = str_replace(".java", "", $testFileName);
+	//$testFileName = str_replace(".java", "", $testFileName);
 	touch($studentclass);
 
 	//work out the compile command line to compile the JUnit test
 	$command = '"' . $conf->pathtojavac . '" -cp "' . $conf->pathtojunit . '" -sourcepath ' . $temp_folder . ' ' . $testFile . ' > ' . $executionoutputfile . ' 2>&1';
-        
+        //die($command); 
         //execute the command
 	$output = shell_exec($command);	
 
@@ -383,7 +383,7 @@ class qtype_unittest_question extends question_graded_automatically {
         
         //$command = $commandWithSecurity . ' -cp ' . $classPath . ' org.junit.runner.JUnitCore ' . $testFileName . ' > ' . $executionoutputfile . ' 2>&1';
 	$command = $commandWithSecurity . ' -cp ' . $classPath . ' org.junit.runner.JUnitCore ' . $testFileName;
-        
+        //die($command); 
         //execute the command
 	//$output = shell_exec($command);
 
@@ -492,7 +492,7 @@ class qtype_unittest_question extends question_graded_automatically {
      * @return Exit code from the process
      */
     private function execute_process($cmd, &$stdout, &$stderr, $workingFolder=null) {
-         
+        //die($cmd); 
         $descriptorspec = array(
             0 => array("pipe", "r"),  // stdin
             1 => array("pipe", "w"),  // stdout
@@ -503,7 +503,10 @@ class qtype_unittest_question extends question_graded_automatically {
          * Extra double quotes are due to a php bug with proc_open
          * @link https://bugs.php.net/bug.php?id=49139
          */
-        $proc_id = proc_open('"'. $cmd . '"', $descriptorspec, $pipes, $workingFolder);
+        if ($this->isWindows()) {
+            $cmd = '"' . $cmd . '"'; 
+        }
+        $proc_id = proc_open($cmd, $descriptorspec, $pipes, $workingFolder);
         
         if ($proc_id) {
             $stdout = stream_get_contents($pipes[1]);
@@ -512,7 +515,9 @@ class qtype_unittest_question extends question_graded_automatically {
             $stderr = stream_get_contents($pipes[2]);
             fclose($pipes[2]);
         }
-        
+//        var_dump($stdout);
+//        var_dump($stderr); 
+//        echo '<pre>'.print_r($pipes, true).'</pre>'; die(); 
         return proc_close($proc_id); 
     }
     
