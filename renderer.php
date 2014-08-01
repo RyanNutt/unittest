@@ -76,7 +76,7 @@ class qtype_unittest_renderer extends qtype_renderer {
 	//get the feedback from the database
 	$answer = $DB->get_records('question_answers', array('question' => $unique_answerid));
 	$answer = array_shift($answer);
-        
+         
         if (!empty($answer->feedback)) {
             
             $junit = new junit_parser($answer->feedback);
@@ -92,7 +92,9 @@ class qtype_unittest_renderer extends qtype_renderer {
             $result .= '<div class="progress">';
             $result .= '<div class="correct" style="width:' . $percentage . '%">&nbsp;</div>'; 
             $result .= '</div>'; // .progress
-            $result .= '<div class="left">' . get_string($junit->status, 'qtype_unittest') .'</div>';
+            if (!empty($junit->status)) {
+                $result .= '<div class="left">' . get_string($junit->status, 'qtype_unittest') .'</div>';
+            }
             $result .= '<div class="right">';
             if ($junit->testCount == 0) {
                 $result .= get_string('notests', 'qtype_unittest');

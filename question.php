@@ -166,7 +166,7 @@ class qtype_unittest_question extends question_graded_automatically {
 	$testclassname = $options->testclassname;
 
 	$junitcode = $options->junitcode;
-
+        $junitcode = $this->add_junit_timeout($junitcode);
 	$testFile = $temp_folder . '/' . $testclassname . '.java';
 
 	touch($testFile);
@@ -556,5 +556,29 @@ class qtype_unittest_question extends question_graded_automatically {
         } 
         
         return $out; 
+    }
+    
+    /**
+     * Adds a default timeout to the JUnit test file if it doesn't already
+     * exist.
+     * 
+     * @link https://github.com/junit-team/junit/wiki/Timeout-for-tests
+     * @param String $junitCode
+     */
+    private function add_junit_timeout($junitCode) {
+        
+        // If it's already there, don't repeat
+        if (!preg_match('/@Rule\s+?public.*?new\s+Timeout\(\d+?\)\s*?;/', $junitCode)) {
+            // Replace the first { with a { and the timeout line
+            
+            $conf = get_config('qtype_unittest');
+            $timeout = $conf->defaulttimeout * 1000; // need milliseconds
+            
+            $newLine = "\t@Rule\n\tpublic Timeout globalTimeout = new Timeout(" . $timeout . ");\n"; 
+            
+            $junitCode = "import org.junit.rules.Timeout;\nimport org.junit.Rule; \n" . preg_replace('/{/', "{\n" . $newLine, $junitCode, 1);
+        }
+        //die($junitCode); 
+        return $junitCode; 
     }
 }
