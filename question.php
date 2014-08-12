@@ -323,17 +323,13 @@ class qtype_unittest_question extends question_graded_automatically {
     function compile($studentclass, $temp_folder, $studentsclassname) {
         $conf = get_config('qtype_unittest');
         
-       
-        
         //work out the compile command line
         $compileroutputfile = $temp_folder . '/' . $studentsclassname . '_compileroutput.log';
 	touch($compileroutputfile);
 			
         $command = '"' . $conf->pathtojavac . '" -cp "' . $conf->pathtojunit . '" "' . $studentclass .'"';// . ' -Xstdout ' . $compileroutputfile;
-        //die($command); 
-        //execute the command
-	//$output = shell_exec(escapeshellcmd($command));
-	$stdout = '';
+        
+        $stdout = '';
         $stderr = '';
         $proc = $this->execute_process($command, $stdout, $stderr);
         
@@ -363,21 +359,9 @@ class qtype_unittest_question extends question_graded_automatically {
         
 	//create the log file to store the output of the JUnit test
         $executionoutputfile = $temp_folder. '/' . $studentsclassname . '_executionoutput.log';
-	//$testFileName = str_replace(".java", "", $testFileName);
-	touch($studentclass);
+	
+        touch($studentclass);
 
-	//work out the compile command line to compile the JUnit test
-	$command = '"' . $conf->pathtojavac . '" -cp "' . $conf->pathtojunit . '" -sourcepath ' . $temp_folder . ' ' . $testFile . ' > ' . $executionoutputfile . ' 2>&1';
-        //die($command); 
-        //execute the command
-	$output = shell_exec($command);	
-
-        $policyFile = dirname(__FILE__).'/polfile';
-        
-	//work out the compile command line to execute the JUnit test
-	$commandWithSecurity = '"' . $conf->pathtojava . '"' . " -Djava.security.manager=default" . " -Djava.security.policy=". $policyFile . " ";	
-	//$command = $commandWithSecurity . ' -cp "' . $conf->pathtojunit . '":' . $temp_folder . ' junit.textui.TestRunner ' . $testFileName . ' > ' . $executionoutputfile . ' 2>&1';
-        
         /* Windows uses a semicolon to separate classpaths, Linux uses a colon */
         $classPath = $conf->pathtojunit . ($this->isWindows() ? ';' : ':') . $temp_folder;
         if (!empty($conf->pathtohamcrest)) {
@@ -385,20 +369,24 @@ class qtype_unittest_question extends question_graded_automatically {
         }
         $classPath = '"' . $classPath . '"';
         
-        //$command = $commandWithSecurity . ' -cp ' . $classPath . ' org.junit.runner.JUnitCore ' . $testFileName . ' > ' . $executionoutputfile . ' 2>&1';
-	$command = $commandWithSecurity . ' -cp ' . $classPath . ' org.junit.runner.JUnitCore ' . $testFileName;
-        //die($command); 
-        //execute the command
-	//$output = shell_exec($command);
+        
+	//work out the compile command line to compile the JUnit test
+	$command = '"' . $conf->pathtojavac . '" -cp "' . $classPath . '" -sourcepath ' . $temp_folder . ' ' . $testFile . ' > ' . $executionoutputfile . ' 2>&1';
+        
+        $output = shell_exec($command);	
 
+        $policyFile = dirname(__FILE__).'/polfile';
+        
+	//work out the compile command line to execute the JUnit test
+	$commandWithSecurity = '"' . $conf->pathtojava . '"' . " -Djava.security.manager=default" . " -Djava.security.policy=". $policyFile . " ";	
+	
+        $command = $commandWithSecurity . ' -cp ' . $classPath . ' org.junit.runner.JUnitCore ' . $testFileName;
+        
         $stdout = '';
         $stderr = ''; 
         $ret = $this->execute_process($command, $stdout, $stderr);
         
-	//get the execution log
-	//$executionoutput = file_get_contents($executionoutputfile);
-
-	return $stdout;
+        return $stdout;
     }
 
 
