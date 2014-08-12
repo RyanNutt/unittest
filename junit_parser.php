@@ -36,9 +36,7 @@ class junit_parser {
     
     public function __construct($text) {
         $this->rawString = $text;
-        //$this->testCount = $this->preg_search('/Tests run:.*?(\d+?)/', $text);
-        //$this->failureCount = $this->preg_search('/Failures:.*?(\d+?)/', $text);
-        //$this->errorCount = $this->preg_search('/Errors:.*?(\d+?)/', $text);
+        
         $this->version = $this->preg_search('/JUnit version.*?([\d|\.]+)/', $text);
         $this->time = $this->preg_search('/Time.*?([\d|\.]+)/', $text); 
         $this->status = $this->preg_search('/\[unittest:(.+?)\]/', $text); 
