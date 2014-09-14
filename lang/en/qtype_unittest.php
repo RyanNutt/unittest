@@ -10,7 +10,10 @@
  */
 
 
-
+$string['attachments'] = 'Attachments'; 
+$string['attachments_help'] = 'Any files attached to the question will be automatically copied to the working folder prior to the submitted code being tested.';
+$string['datafiles'] = 'Attachments';
+$string['datafiles_help'] = 'This is the help'; 
 $string['graderinfo'] = 'Information for graders';
 $string['nlines'] = '{$a} lines';
 $string['pluginname'] = 'Unit Test';

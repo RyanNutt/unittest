@@ -50,7 +50,7 @@ class qtype_unittest extends question_type {
      */
     public function save_question_options($formdata) {
 
-        global $DB;
+        global $DB, $USER;
         $context = $formdata->context;
 	$update = true;
 
@@ -68,6 +68,12 @@ class qtype_unittest extends question_type {
 	$options->testclassname = $formdata->testclassname;
 	$options->junitcode = $formdata->junitcode;
 
+        if ($USER->id && isset($formdata->datafiles))  { 
+            //  The id check is a hack to deal with phpunit initialisation, when no user exists
+            file_save_draft_area_files($formdata->datafiles, $formdata->context->id,
+                'qtype_unittest', 'datafile', (int) $formdata->id, $this->fileoptions);
+        }
+        
 	if ($update) {
             $DB->update_record("qtype_unittest_options", $options);
         } else {

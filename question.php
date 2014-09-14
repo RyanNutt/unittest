@@ -197,6 +197,15 @@ class qtype_unittest_question extends question_graded_automatically {
 	fwrite($fh, $studentscode);
 	fclose($fh);
 
+        // Copy any attachments to the working folder
+        $files = $this->getDataFiles();
+        if (!empty($files)) {
+            foreach ($files as $filename => $data) {
+                file_put_contents($studentclass_path.$filename, $data); 
+            } 
+        }
+        
+        
 	//compile the student's response
         $compileroutput = $this->compile($studentclass, $temp_folder, $studentsclassname);
 	$compileroutput = substr_replace($compileroutput, '', 0, strlen($temp_folder)+1);
@@ -308,7 +317,7 @@ class qtype_unittest_question extends question_graded_automatically {
 	
     //at this pont the feedback has already stored in the database and the grade is created. We delete the temporary 
     //and return with the computed fraction of the response.
-    $this->delTree($temp_folder);
+    //$this->delTree($temp_folder);
     return array($fraction, question_state::graded_state_for_fraction($fraction));
     }
 
@@ -331,7 +340,7 @@ class qtype_unittest_question extends question_graded_automatically {
         
         $stdout = '';
         $stderr = '';
-        $proc = $this->execute_process($command, $stdout, $stderr);
+        $proc = $this->execute_process($command, $stdout, $stderr, $temp_folder);
         
         return $stderr; 
         
@@ -378,13 +387,13 @@ class qtype_unittest_question extends question_graded_automatically {
         $policyFile = dirname(__FILE__).'/polfile';
         
 	//work out the compile command line to execute the JUnit test
-	$commandWithSecurity = '"' . $conf->pathtojava . '"' . " -Djava.security.manager=default" . " -Djava.security.policy=". $policyFile . " ";	
+	$commandWithSecurity = '"' . $conf->pathtojava . '"' . " -Djava.security.manager=default" . " -Djava.security.policy=". $policyFile . " -Duser.dir=" . $temp_folder ." ";	
 	
         $command = $commandWithSecurity . ' -cp ' . $classPath . ' org.junit.runner.JUnitCore ' . $testFileName;
-        
+        //die($command);
         $stdout = '';
         $stderr = ''; 
-        $ret = $this->execute_process($command, $stdout, $stderr);
+        $ret = $this->execute_process($command, $stdout, $stderr, $temp_folder);
         
         return $stdout;
     }
@@ -498,6 +507,10 @@ class qtype_unittest_question extends question_graded_automatically {
         if ($this->isWindows()) {
             $cmd = '"' . $cmd . '"'; 
         }
+        
+        //var_dump($workingFolder.'/'); die(); 
+        chdir($workingFolder.'/'); 
+        var_dump(getcwd()); 
         $proc_id = proc_open($cmd, $descriptorspec, $pipes, $workingFolder);
         
         if ($proc_id) {
@@ -577,5 +590,32 @@ class qtype_unittest_question extends question_graded_automatically {
         }
         //die($junitCode); 
         return $junitCode; 
+    }
+    
+    /**
+     *  Return an associative array mapping filename to datafile contents
+     *  for all the datafiles associated with this question
+     */
+    private function getDataFiles() {
+        global $DB;
+        if (isset($this->contextid)) {  // Is this possible? No harm in trying
+            $contextid = $this->contextid;
+        } else if (isset($this->context)) {
+            $contextid = $this->context->id;
+        } else {
+            $record = $DB->get_record('question_categories',
+                array('id' => $this->category), 'contextid');
+            $contextid = $record->contextid;
+        }
+        $fs = get_file_storage();
+        $fileMap = array();
+        $files = $fs->get_area_files($contextid, 'qtype_unittest', 'datafile', $this->id);
+        foreach ($files as $f) {
+            $name = $f->get_filename();
+            if ($name !== '.') {
+                $fileMap[$f->get_filename()] = $f->get_content();
+            }
+        }
+        return $fileMap;
     }
 }
