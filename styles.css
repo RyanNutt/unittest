@@ -20,3 +20,5 @@ div.unittest_results .clear:after { clear: both; }
 
 table.test-results { margin-top: 16px; display: block; }
 table.test-results td, table.test-results th { padding-right: 16px; }
+
+div.ace_editor { width: 100% !important; }
