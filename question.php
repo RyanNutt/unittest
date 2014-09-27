@@ -167,12 +167,21 @@ class qtype_unittest_question extends question_graded_automatically {
 	//create the test class from the database and save it in the temporary folder
 	$options = $DB->get_record('qtype_unittest_options', array('questionid' => $questionid));
          
-	$testclassname = $options->testclassname;
-
+	
+        
 	$junitcode = $options->junitcode;
         $junitcode = $this->add_junit_timeout($junitcode);
-	$testFile = $temp_folder . '/' . $testclassname . '.java';
+	
 
+        $testclassname = $options->testclassname;
+
+        preg_match('/^(?:\s*public)?\s*class\s+(\w[a-zA-Z0-9_]+)/m', $junitcode, $matches);
+	if (empty( $matches[1])){
+		$testclassname = 'Xy';
+	} else {
+		$testclassname = $matches[1];
+	}
+        $testFile = $temp_folder . '/' . $testclassname . '.java';
 	touch($testFile);
 	$fh = fopen($testFile, 'w') or die("can't open file");
 	fwrite($fh, $junitcode);

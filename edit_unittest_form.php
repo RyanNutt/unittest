@@ -57,10 +57,10 @@ class qtype_unittest_edit_form extends question_edit_form {
         $mform->addHelpButton('givencode', 'givencode', 'qtype_unittest');
 
         //-------------------------- "Test class" Text-Area
-        $mform->addElement('textarea', 'testclassname', get_string('testclassname', 'qtype_unittest'), array('cols' => 80, 'rows' => 1));
-        $mform->setType('testclassname', PARAM_RAW);
-        $mform->addRule('testclassname', null, 'required');
-        $mform->addHelpButton('testclassname', 'testclassname', 'qtype_unittest');
+        //$mform->addElement('textarea', 'testclassname', get_string('testclassname', 'qtype_unittest'), array('cols' => 80, 'rows' => 1));
+        //$mform->setType('testclassname', PARAM_RAW);
+        //$mform->addRule('testclassname', null, 'required');
+        //$mform->addHelpButton('testclassname', 'testclassname', 'qtype_unittest');
         $mform->addElement('textarea', 'junitcode', get_string('uploadtestclass', 'qtype_unittest'), array('cols' => 80, 'rows' => 20));
         $mform->setType('junitcode', PARAM_RAW);
         $mform->addRule('junitcode', null, 'required');

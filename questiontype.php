@@ -65,7 +65,7 @@ class qtype_unittest extends question_type {
         $options->responseformat = 'plain';
         $options->responsefieldlines = $formdata->responsefieldlines;
 	$options->givencode = $formdata->givencode;
-	$options->testclassname = $formdata->testclassname;
+	$options->testclassname = (empty($formdata->testclassname) ? '' : $formdata->testclassname);
 	$options->junitcode = $formdata->junitcode;
 
         if ($USER->id && isset($formdata->datafiles))  { 
