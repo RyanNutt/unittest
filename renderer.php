@@ -68,13 +68,15 @@ class qtype_unittest_renderer extends qtype_renderer {
         
         $attemptid = optional_param('attempt', '', PARAM_INT);
 	$question = $qa->get_question();
-	$step = $qa->get_last_step_with_qt_var('answer');
+	//$step = $qa->get_last_step_with_qt_var('answer');
 	$studentid = $step->get_user_id();
 	$questionid = $question->id;
 
 	//compute the unique id of the feedback
 	$unique_answerid = ($studentid + $questionid * $attemptid) + ($studentid * $questionid + $attemptid);
-
+//        var_dump($studentid); var_dump($questionid); var_dump($attemptid); 
+//        var_dump($unique_answerid); 
+        
 	//get the feedback from the database
 	$answer = $DB->get_records('question_answers', array('question' => $unique_answerid));
         //print_r($answer); 
@@ -124,6 +126,13 @@ class qtype_unittest_renderer extends qtype_renderer {
                     $result .= '<tr><td>'.$cnt++.'</td><td>'.htmlentities(stripslashes($r)).'</td></tr>'; 
                 }
                 $result .= '</table>';
+            }
+            
+            /* Show the compiler output if there was an error compiling
+             * student submitted code
+             */
+            if ($junit->status == 'CE') {
+                $result .= '<pre>'.stripslashes($answer->feedback).'</pre>'; 
             }
             
             $result .= '</div>';
