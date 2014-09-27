@@ -14,10 +14,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'qtype_unittest';
-$plugin->version   = 2014091400;
+$plugin->version   = 2014092700;
 
 $plugin->requires  = 2012062500;
 
 $plugin->maturity  = MATURITY_STABLE;
 
-$plugin->release = '1.0.1';
+$plugin->release = '1.0.2';
