@@ -17,3 +17,6 @@ div.unittest_results .clear:after { clear: both; }
 .que.unittest .qtype_unittest_response.readonly { background-color: white; }
 
 .que.unittest div.qtype_unittest_response textarea { width: 100%; }
+
+table.test-results { margin-top: 16px; display: block; }
+table.test-results td, table.test-results th { padding-right: 16px; }

@@ -34,6 +34,8 @@ class junit_parser {
     
     public $rawString = false; 
     
+    public $results = array();
+    
     public function __construct($text) {
         $this->rawString = $text;
         
@@ -46,6 +48,18 @@ class junit_parser {
         $this->testCount = substr_count($this->gradeString, '.'); 
         $this->errorCount = substr_count($this->gradeString, 'E');
         $this->failureCount = substr_count($this->gradeString, 'F');
+        
+        
+        
+        if (preg_match_all('/^\d+?\).*?\r?\n(.*)\r?\n/m', $text, $matches)) {
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $match) {
+                    $res = preg_replace('/^java\.lang(.*?)\s/', '', $match);
+                    $res = preg_replace('/^org\.(.*?)\s/', '', $res); 
+                    $this->results[] = $res;  
+                }
+            } 
+        }
         
     }
     

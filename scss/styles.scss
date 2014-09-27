@@ -52,3 +52,12 @@ div.unittest_results {
 .que.unittest div.qtype_unittest_response textarea {
     width: 100%; 
 }  
+
+table.test-results {
+    margin-top: 16px;
+    display: block; 
+    td, 
+    th {
+        padding-right: 16px;
+    }
+}

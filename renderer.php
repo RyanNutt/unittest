@@ -37,7 +37,7 @@ class qtype_unittest_renderer extends qtype_renderer {
      */
     public function formulation_and_controls(question_attempt $qa,
             question_display_options $options) {
-
+        //print_r($qa); print_r($options); 
 	global $DB, $PAGE;
         
         $question = $qa->get_question();
@@ -77,6 +77,7 @@ class qtype_unittest_renderer extends qtype_renderer {
 
 	//get the feedback from the database
 	$answer = $DB->get_records('question_answers', array('question' => $unique_answerid));
+        //print_r($answer); 
 	$answer = array_shift($answer);
          
         if (!empty($answer->feedback)) {
@@ -91,6 +92,8 @@ class qtype_unittest_renderer extends qtype_renderer {
             }
             $correct = $junit->testCount - $junit->errorCount - $junit->failureCount;
             $result .= '<div class="unittest_results clear">';
+            
+            
             if ($options->marks) {
                 $result .= '<div class="progress">';
                 $result .= '<div class="correct" style="width:' . $percentage . '%">&nbsp;</div>'; 
@@ -109,7 +112,20 @@ class qtype_unittest_renderer extends qtype_renderer {
                 }
                 $result .= '</div>'; //.right
             }
+            
+            
             $result .= '<br style="clear:both;">'; 
+            
+            //var_dump($junit->results); 
+            if ($options->correctness && !empty($junit->results)) {
+                $cnt = 1; 
+                $result .= '<table class="test-results"><tr><th>Test</th><th>Result</th></tr>';
+                foreach ($junit->results as $r) {
+                    $result .= '<tr><td>'.$cnt++.'</td><td>'.htmlentities(stripslashes($r)).'</td></tr>'; 
+                }
+                $result .= '</table>';
+            }
+            
             $result .= '</div>';
         }
         
@@ -128,9 +144,14 @@ class qtype_unittest_renderer extends qtype_renderer {
     /**
      * Generates the specific feedback from the database when the attempt is finished
      * and the question is answered.
+     * 
+     * Going to do nothing in here for right now since it was just dumping 
+     * the JUnit stack trace, and that's not all that useful to the kids. 
+     * The results table is shown as part of the render and that takes the
+     * place of this and is easier to read anyway. 
      */   
     public function specific_feedback(question_attempt $qa) {
-	
+	return ''; 
 	global $DB, $CFG;
 
 	//in question.grade_response() function these data were used to store the feedback
